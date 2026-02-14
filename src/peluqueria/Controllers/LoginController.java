@@ -57,14 +57,14 @@ public class LoginController {
 
         try{
             FXMLLoader loader = new FXMLLoader(
-                getClass().getResource("/peluqueria/vistas/Homepage.fxml")
+                getClass().getResource("/peluqueria/Vistas/Dashboard.fxml")
             );
 
             Parent root = loader.load();
 
             Stage stage = new Stage();
             stage.setScene(new Scene(root));
-            stage.setTitle("Sistema Peluqueria");
+            stage.setTitle("Sistema Peluqueria - Dashboard");
             stage.setMaximized(true);
             stage.show();
 
