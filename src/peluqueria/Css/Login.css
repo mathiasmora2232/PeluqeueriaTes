@@ -1,0 +1,56 @@
+/* fondo */
+.background{
+    -fx-background-color: linear-gradient(to bottom,#667eea,#764ba2);
+}
+
+/* tarjeta blanca */
+.login-card{
+    -fx-background-color: white;
+    -fx-background-radius: 12;
+    -fx-padding: 30;
+}
+
+/* titulo */
+.titulo{
+    -fx-fill: white;
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+}
+
+/* icono */
+.icon{
+    -fx-fill: white;
+    -fx-font-size: 60px;
+}
+
+/* labels */
+.label-form{
+    -fx-font-weight: bold;
+}
+
+/* inputs */
+.text-field, .password-field{
+    -fx-padding: 10;
+    -fx-border-color: #e0e0e0;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+}
+
+/* boton login */
+.btn-login{
+    -fx-background-color:#667eea;
+    -fx-text-fill:white;
+    -fx-font-size:15px;
+    -fx-background-radius:6;
+}
+
+.btn-login:hover{
+    -fx-background-color:#5563c1;
+}
+
+/* boton bypass */
+.btn-force{
+    -fx-background-color:#00b894;
+    -fx-text-fill:white;
+    -fx-background-radius:6;
+}
