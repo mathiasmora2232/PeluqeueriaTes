@@ -41,7 +41,25 @@ public class DashboardController implements Initializable {
     // NAVEGACION
     @FXML private void irDashboard() { }
 
-    @FXML private void irCitas() { }
+    @FXML
+    private void irCitas() {
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                getClass().getResource("/peluqueria/Vistas/AgendarCita.fxml")
+            );
+            Parent root = loader.load();
+
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Sistema Peluqueria - Agendar Cita");
+            stage.show();
+
+            Stage actual = (Stage) lblBienvenida.getScene().getWindow();
+            actual.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     @FXML private void irClientes() { }
 

@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<HBox prefHeight="600.0" prefWidth="900.0"
+      stylesheets="@/peluqueria/Css/agendarCita.css"
+      xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="peluqueria.Controllers.AgendarCitaController">
+
+    <!-- SIDEBAR -->
+    <VBox prefWidth="200" styleClass="sidebar" spacing="5">
+        <padding>
+            <Insets top="20" bottom="20" left="10" right="10"/>
+        </padding>
+
+        <Label text="PELUQUERIA" styleClass="sidebar-title"/>
+        <Label text="Sistema de Gestion" styleClass="sidebar-subtitle"/>
+
+        <Region prefHeight="20"/>
+
+        <Button text="Inicio" styleClass="sidebar-btn" onAction="#irDashboard" maxWidth="Infinity"/>
+        <Button text="Citas" styleClass="sidebar-btn-active" onAction="#irCitas" maxWidth="Infinity"/>
+        <Button text="Clientes" styleClass="sidebar-btn" onAction="#irClientes" maxWidth="Infinity"/>
+        <Button text="Servicios" styleClass="sidebar-btn" onAction="#irServicios" maxWidth="Infinity"/>
+        <Button text="Inventario" styleClass="sidebar-btn" onAction="#irInventario" maxWidth="Infinity"/>
+        <Button text="Pagos" styleClass="sidebar-btn" onAction="#irPagos" maxWidth="Infinity"/>
+
+        <Region VBox.vgrow="ALWAYS"/>
+
+        <Button text="Cerrar Sesion" styleClass="sidebar-btn-logout" onAction="#cerrarSesion" maxWidth="Infinity"/>
+    </VBox>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <VBox styleClass="contenido" spacing="15" HBox.hgrow="ALWAYS">
+        <padding>
+            <Insets top="25" right="25" bottom="25" left="25"/>
+        </padding>
+
+        <!-- Titulo -->
+        <Label text="Agendar Nueva Cita" styleClass="titulo"/>
+        <Label text="Complete los datos para reservar una cita" styleClass="fecha"/>
+
+        <!-- FORMULARIO -->
+        <VBox styleClass="card" spacing="15">
+            <Label text="Datos de la Cita" styleClass="form-seccion"/>
+
+            <GridPane hgap="15" vgap="12">
+                <columnConstraints>
+                    <ColumnConstraints percentWidth="50"/>
+                    <ColumnConstraints percentWidth="50"/>
+                </columnConstraints>
+
+                <!-- Fila 1: Nombre y Telefono -->
+                <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                    <Label text="Nombre del Cliente" styleClass="label-form"/>
+                    <TextField fx:id="txtNombre" promptText="Ej: Maria Lopez" styleClass="campo-texto"/>
+                </VBox>
+
+                <VBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                    <Label text="Telefono" styleClass="label-form"/>
+                    <TextField fx:id="txtTelefono" promptText="Ej: 0999-123-456" styleClass="campo-texto"/>
+                </VBox>
+
+                <!-- Fila 2: Servicio y Estilista -->
+                <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                    <Label text="Servicio" styleClass="label-form"/>
+                    <ComboBox fx:id="cmbServicio" promptText="Seleccione un servicio" maxWidth="Infinity" styleClass="campo-combo"/>
+                </VBox>
+
+                <VBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                    <Label text="Estilista" styleClass="label-form"/>
+                    <ComboBox fx:id="cmbEstilista" promptText="Seleccione estilista" maxWidth="Infinity" styleClass="campo-combo"/>
+                </VBox>
+
+                <!-- Fila 3: Fecha y Hora -->
+                <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="2">
+                    <Label text="Fecha" styleClass="label-form"/>
+                    <DatePicker fx:id="dpFecha" promptText="Seleccione fecha" maxWidth="Infinity" styleClass="campo-fecha"/>
+                </VBox>
+
+                <VBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                    <Label text="Hora" styleClass="label-form"/>
+                    <ComboBox fx:id="cmbHora" promptText="Seleccione hora" maxWidth="Infinity" styleClass="campo-combo"/>
+                </VBox>
+            </GridPane>
+
+            <!-- Botones -->
+            <HBox spacing="10" alignment="CENTER_RIGHT">
+                <Label fx:id="lblMensaje" styleClass="mensaje"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button text="Limpiar" styleClass="btn-secundario" onAction="#limpiarFormulario"/>
+                <Button text="Agendar Cita" styleClass="btn-accion" onAction="#agendarCita"/>
+            </HBox>
+        </VBox>
+
+        <!-- TABLA DE CITAS AGENDADAS -->
+        <Label text="Citas Agendadas" styleClass="subtitulo"/>
+
+        <TableView fx:id="tablaCitas" styleClass="tabla-citas" VBox.vgrow="ALWAYS">
+            <columns>
+                <TableColumn fx:id="colCliente" text="Cliente" prefWidth="140"/>
+                <TableColumn fx:id="colServicio" text="Servicio" prefWidth="130"/>
+                <TableColumn fx:id="colEstilista" text="Estilista" prefWidth="120"/>
+                <TableColumn fx:id="colFecha" text="Fecha" prefWidth="100"/>
+                <TableColumn fx:id="colHora" text="Hora" prefWidth="80"/>
+                <TableColumn fx:id="colEstado" text="Estado" prefWidth="90"/>
+            </columns>
+        </TableView>
+
+    </VBox>
+
+</HBox>
