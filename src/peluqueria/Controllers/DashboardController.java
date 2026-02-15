@@ -1,4 +1,4 @@
-package peluqueria.Controllers;
+        package peluqueria.Controllers;
 
 import java.net.URL;
 import java.time.LocalDate;
