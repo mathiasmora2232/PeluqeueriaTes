@@ -1,4 +1,4 @@
-        package peluqueria.Controllers;
+package peluqueria.Controllers;
 
 import java.net.URL;
 import java.time.LocalDate;
@@ -61,11 +61,27 @@ public class DashboardController implements Initializable {
         }
     }
 
-    @FXML private void irClientes() { }
+    @FXML
+    private void irClientes() {
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                getClass().getResource("/peluqueria/Vistas/Clientes.fxml")
+            );
+            Parent root = loader.load();
+
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Sistema Peluqueria - Clientes");
+            stage.show();
+
+            Stage actual = (Stage) lblBienvenida.getScene().getWindow();
+            actual.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     @FXML private void irServicios() { }
-
-    @FXML private void irInventario() { }
 
     @FXML private void irPagos() { }
 

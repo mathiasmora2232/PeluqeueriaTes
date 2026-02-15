@@ -161,9 +161,13 @@ public class AgendarCitaController implements Initializable {
     }
 
     @FXML private void irCitas() { }
-    @FXML private void irClientes() { }
+
+    @FXML
+    private void irClientes() {
+        cargarVista("/peluqueria/Vistas/Clientes.fxml", "Sistema Peluqueria - Clientes");
+    }
+
     @FXML private void irServicios() { }
-    @FXML private void irInventario() { }
     @FXML private void irPagos() { }
 
     @FXML

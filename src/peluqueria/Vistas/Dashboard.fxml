@@ -27,7 +27,6 @@
         <Button text="Citas" styleClass="sidebar-btn" onAction="#irCitas" maxWidth="Infinity"/>
         <Button text="Clientes" styleClass="sidebar-btn" onAction="#irClientes" maxWidth="Infinity"/>
         <Button text="Servicios" styleClass="sidebar-btn" onAction="#irServicios" maxWidth="Infinity"/>
-        <Button text="Inventario" styleClass="sidebar-btn" onAction="#irInventario" maxWidth="Infinity"/>
         <Button text="Pagos" styleClass="sidebar-btn" onAction="#irPagos" maxWidth="Infinity"/>
 
         <Region VBox.vgrow="ALWAYS"/>
