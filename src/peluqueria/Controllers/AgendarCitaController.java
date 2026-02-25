@@ -47,23 +47,7 @@ public class AgendarCitaController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // Cargar servicios desde la base de datos
-        List<Servicio> servicios = ServicioDAO.obtenerTodos();
-        cmbServicio.setItems(FXCollections.observableArrayList(servicios));
-
-        // Cargar estilistas desde la base de datos
-        List<Estilista> estilistas = EstilistaDAO.obtenerTodos();
-        cmbEstilista.setItems(FXCollections.observableArrayList(estilistas));
-
-        // Cargar horarios disponibles (9:00 AM - 6:00 PM)
-        ObservableList<String> horarios = FXCollections.observableArrayList();
-        for (int h = 9; h <= 18; h++) {
-            horarios.add(String.format("%02d:00", h));
-            if (h < 18) {
-                horarios.add(String.format("%02d:30", h));
-            }
-        }
-        cmbHora.setItems(horarios);
+        cargarDatos();
 
         // Fecha minima: hoy
         dpFecha.setValue(LocalDate.now());
@@ -77,6 +61,45 @@ public class AgendarCitaController implements Initializable {
         colEstado.setCellValueFactory(new PropertyValueFactory<>("estado"));
 
         tablaCitas.setItems(listaCitas);
+    }
+
+    // Método para cargar servicios y estilistas
+    private void cargarDatos() {
+        cargarServicios();
+        cargarEstilistas();
+        cargarHorarios();
+    }
+
+    // Cargar servicios desde la base de datos
+    private void cargarServicios() {
+        List<Servicio> servicios = ServicioDAO.obtenerTodos();
+        cmbServicio.setItems(FXCollections.observableArrayList(servicios));
+    }
+
+    // Cargar estilistas desde la base de datos
+    private void cargarEstilistas() {
+        List<Estilista> estilistas = EstilistaDAO.obtenerTodos();
+        cmbEstilista.setItems(FXCollections.observableArrayList(estilistas));
+        System.out.println("Estilistas cargados: " + estilistas.size());
+    }
+
+    // Cargar horarios disponibles
+    private void cargarHorarios() {
+        ObservableList<String> horarios = FXCollections.observableArrayList();
+        for (int h = 9; h <= 18; h++) {
+            horarios.add(String.format("%02d:00", h));
+            if (h < 18) {
+                horarios.add(String.format("%02d:30", h));
+            }
+        }
+        cmbHora.setItems(horarios);
+    }
+
+    // Método público para refrescar estilistas y servicios
+    @FXML
+    public void refrescarDatos() {
+        cargarDatos();
+        mostrarMensaje("Datos recargados exitosamente", false);
     }
 
     @FXML

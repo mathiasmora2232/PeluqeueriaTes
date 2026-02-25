@@ -83,6 +83,8 @@ public class EstilistaDAO {
             ps.setString(6, estilista.getEstado());
             
             ps.executeUpdate();
+            conn.commit(); // COMMIT explícito
+            System.out.println("Estilista creado exitosamente: " + estilista.getNombre());
             return true;
         } catch (SQLException e) {
             System.err.println("Error al crear estilista: " + e.getMessage());
@@ -105,6 +107,8 @@ public class EstilistaDAO {
             ps.setInt(6, estilista.getIdUsuario());
             
             ps.executeUpdate();
+            conn.commit(); // COMMIT explícito
+            System.out.println("Estilista actualizado exitosamente: " + estilista.getNombre());
             return true;
         } catch (SQLException e) {
             System.err.println("Error al actualizar estilista: " + e.getMessage());
@@ -121,6 +125,8 @@ public class EstilistaDAO {
             
             ps.setInt(1, idUsuario);
             ps.executeUpdate();
+            conn.commit(); // COMMIT explícito
+            System.out.println("Estilista eliminado exitosamente");
             return true;
         } catch (SQLException e) {
             System.err.println("Error al eliminar estilista: " + e.getMessage());

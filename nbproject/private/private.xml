@@ -9,7 +9,9 @@
             <file>file:/C:/Users/USER/Desktop/programs/Universidad/PeluqeueriaTes/src/peluqueria/Vistas/Homepage.fxml</file>
             <file>file:/C:/Users/USER/Desktop/programs/Universidad/PeluqeueriaTes/src/peluqueria/Controllers/AgendarCitaController.java</file>
             <file>file:/C:/Users/USER/Desktop/programs/Universidad/PeluqeueriaTes/src/peluqueria/Vistas/AgendarCita.fxml</file>
-            <file>file:/C:/Users/USER/Desktop/programs/Universidad/PeluqeueriaTes/src/peluqeueriates/PeluqeueriaTes.java</file>
+            <file>file:/C:/Users/USER/Desktop/programs/Universidad/PeluqeueriaTes/src/peluqueria/Controllers/LoginController.java</file>
+            <file>file:/C:/Users/USER/Desktop/programs/Universidad/PeluqeueriaTes/src/peluqueria/Database/Conexion.java</file>
+            <file>file:/C:/Users/USER/Desktop/programs/Universidad/PeluqeueriaTes/src/peluqueria/Database/UsuarioDAO.java</file>
         </group>
     </open-files>
 </project-private>

@@ -75,6 +75,8 @@ public class UsuarioDAO {
             ps.setString(3, usuario.getRol());
             
             ps.executeUpdate();
+            conn.commit(); // COMMIT explícito
+            System.out.println("Usuario creado exitosamente: " + usuario.getUsername());
             return true;
         } catch (SQLException e) {
             System.err.println("Error al crear usuario: " + e.getMessage());
