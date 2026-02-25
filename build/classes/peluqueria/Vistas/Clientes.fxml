@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<HBox prefHeight="600.0" prefWidth="900.0"
+      stylesheets="@/peluqueria/Css/clientes.css"
+      xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="peluqueria.Controllers.ClientesController">
+
+    <!-- SIDEBAR -->
+    <VBox prefWidth="200" styleClass="sidebar" spacing="5">
+        <padding>
+            <Insets top="20" bottom="20" left="10" right="10"/>
+        </padding>
+
+        <Label text="PELUQUERIA" styleClass="sidebar-title"/>
+        <Label text="Sistema de Gestion" styleClass="sidebar-subtitle"/>
+
+        <Region prefHeight="20"/>
+
+        <Button text="Inicio" styleClass="sidebar-btn" onAction="#irDashboard" maxWidth="Infinity"/>
+        <Button text="Citas" styleClass="sidebar-btn" onAction="#irCitas" maxWidth="Infinity"/>
+        <Button text="Clientes" styleClass="sidebar-btn-active" onAction="#irClientes" maxWidth="Infinity"/>
+        <Button text="Servicios" styleClass="sidebar-btn" onAction="#irServicios" maxWidth="Infinity"/>
+        <Button text="Pagos" styleClass="sidebar-btn" onAction="#irPagos" maxWidth="Infinity"/>
+
+        <Region VBox.vgrow="ALWAYS"/>
+
+        <Button text="Cerrar Sesion" styleClass="sidebar-btn-logout" onAction="#cerrarSesion" maxWidth="Infinity"/>
+    </VBox>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <VBox styleClass="contenido" spacing="15" HBox.hgrow="ALWAYS">
+        <padding>
+            <Insets top="25" right="25" bottom="25" left="25"/>
+        </padding>
+
+        <!-- Titulo -->
+        <Label text="Gestion de Clientes" styleClass="titulo"/>
+        <Label text="Registre y administre los clientes de la peluqueria" styleClass="fecha"/>
+
+        <!-- FORMULARIO -->
+        <VBox styleClass="card" spacing="15">
+            <Label text="Datos del Cliente" styleClass="form-seccion"/>
+
+            <GridPane hgap="15" vgap="12">
+                <columnConstraints>
+                    <ColumnConstraints percentWidth="33.33"/>
+                    <ColumnConstraints percentWidth="33.33"/>
+                    <ColumnConstraints percentWidth="33.33"/>
+                </columnConstraints>
+
+                <!-- Fila 1: Nombre, Telefono, Email -->
+                <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                    <Label text="Nombre Completo" styleClass="label-form"/>
+                    <TextField fx:id="txtNombre" promptText="Ej: Maria Lopez" styleClass="campo-texto"/>
+                </VBox>
+
+                <VBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                    <Label text="Telefono" styleClass="label-form"/>
+                    <TextField fx:id="txtTelefono" promptText="Ej: 0999-123-456" styleClass="campo-texto"/>
+                </VBox>
+
+                <VBox spacing="5" GridPane.columnIndex="2" GridPane.rowIndex="0">
+                    <Label text="Email" styleClass="label-form"/>
+                    <TextField fx:id="txtEmail" promptText="Ej: maria@email.com" styleClass="campo-texto"/>
+                </VBox>
+
+                <!-- Fila 2: Direccion y Notas -->
+                <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.columnSpan="2">
+                    <Label text="Direccion" styleClass="label-form"/>
+                    <TextField fx:id="txtDireccion" promptText="Ej: Av. Principal #123" styleClass="campo-texto"/>
+                </VBox>
+
+                <VBox spacing="5" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                    <Label text="Notas" styleClass="label-form"/>
+                    <TextField fx:id="txtNotas" promptText="Ej: Alergica a tintes" styleClass="campo-texto"/>
+                </VBox>
+            </GridPane>
+
+            <!-- Botones -->
+            <HBox spacing="10" alignment="CENTER_RIGHT">
+                <Label fx:id="lblMensaje" styleClass="mensaje"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button text="Limpiar" styleClass="btn-secundario" onAction="#limpiarFormulario"/>
+                <Button text="Guardar Cliente" styleClass="btn-accion" onAction="#guardarCliente"/>
+            </HBox>
+        </VBox>
+
+        <!-- TABLA DE CLIENTES -->
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Label text="Clientes Registrados" styleClass="subtitulo"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <TextField fx:id="txtBuscar" promptText="Buscar cliente..." styleClass="campo-buscar"/>
+        </HBox>
+
+        <TableView fx:id="tablaClientes" styleClass="tabla-citas" VBox.vgrow="ALWAYS">
+            <columns>
+                <TableColumn fx:id="colNombre" text="Nombre" prefWidth="160"/>
+                <TableColumn fx:id="colTelefono" text="Telefono" prefWidth="120"/>
+                <TableColumn fx:id="colEmail" text="Email" prefWidth="170"/>
+                <TableColumn fx:id="colDireccion" text="Direccion" prefWidth="160"/>
+                <TableColumn fx:id="colNotas" text="Notas" prefWidth="140"/>
+            </columns>
+        </TableView>
+
+    </VBox>
+
+</HBox>
