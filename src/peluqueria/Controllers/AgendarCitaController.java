@@ -115,7 +115,7 @@ public class AgendarCitaController implements Initializable {
         DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         Cita nuevaCita = new Cita(
             txtNombre.getText(),
-            cmbServicio.getValue(),
+            cmbServicio.getValue().getNombre(),
             cmbEstilista.getValue().getNombre(),
             dpFecha.getValue().format(fmt),
             cmbHora.getValue(),
