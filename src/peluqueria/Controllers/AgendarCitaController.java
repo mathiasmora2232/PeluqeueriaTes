@@ -3,6 +3,7 @@ package peluqueria.Controllers;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -19,13 +20,17 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
+import peluqueria.Database.EstilistaDAO;
+import peluqueria.Database.ServicioDAO;
+import peluqueria.Models.Estilista;
+import peluqueria.Models.Servicio;
 
 public class AgendarCitaController implements Initializable {
 
     @FXML private TextField txtNombre;
     @FXML private TextField txtTelefono;
-    @FXML private ComboBox<String> cmbServicio;
-    @FXML private ComboBox<String> cmbEstilista;
+    @FXML private ComboBox<Servicio> cmbServicio;
+    @FXML private ComboBox<Estilista> cmbEstilista;
     @FXML private DatePicker dpFecha;
     @FXML private ComboBox<String> cmbHora;
     @FXML private Label lblMensaje;
@@ -42,25 +47,13 @@ public class AgendarCitaController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // Cargar servicios
-        cmbServicio.setItems(FXCollections.observableArrayList(
-            "Corte de Cabello",
-            "Tinte",
-            "Peinado",
-            "Alisado",
-            "Manicure",
-            "Pedicure",
-            "Tratamiento Capilar",
-            "Barba"
-        ));
+        // Cargar servicios desde la base de datos
+        List<Servicio> servicios = ServicioDAO.obtenerTodos();
+        cmbServicio.setItems(FXCollections.observableArrayList(servicios));
 
-        // Cargar estilistas
-        cmbEstilista.setItems(FXCollections.observableArrayList(
-            "Ana Garcia",
-            "Carlos Mendez",
-            "Laura Torres",
-            "Pedro Ruiz"
-        ));
+        // Cargar estilistas desde la base de datos
+        List<Estilista> estilistas = EstilistaDAO.obtenerTodos();
+        cmbEstilista.setItems(FXCollections.observableArrayList(estilistas));
 
         // Cargar horarios disponibles (9:00 AM - 6:00 PM)
         ObservableList<String> horarios = FXCollections.observableArrayList();
@@ -123,7 +116,7 @@ public class AgendarCitaController implements Initializable {
         Cita nuevaCita = new Cita(
             txtNombre.getText(),
             cmbServicio.getValue(),
-            cmbEstilista.getValue(),
+            cmbEstilista.getValue().getNombre(),
             dpFecha.getValue().format(fmt),
             cmbHora.getValue(),
             "Pendiente"

@@ -10,6 +10,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import peluqueria.Database.UsuarioDAO;
+import peluqueria.Models.Usuario;
 
 public class LoginController {
 
@@ -36,12 +38,19 @@ public class LoginController {
             return;
         }
 
-        if(username.equals("admin") && password.equals("1234")){
-
+        // Validar usuario contra la base de datos
+        Usuario usuario = UsuarioDAO.validarUsuario(username, password);
+        
+        System.out.println("DEBUG - Usuario encontrado: " + (usuario != null ? "SÍ" : "NO"));
+        if(usuario != null) {
+            System.out.println("DEBUG - Username: " + usuario.getUsername());
+            System.out.println("DEBUG - Rol: " + usuario.getRol());
+        }
+        
+        if(usuario != null && (usuario.getRol().equals("admin") || usuario.getRol().equals("barbero") || usuario.getRol().equals("recepcion"))){
             abrirSistema();
-
         }else{
-            statusLabel.setText("Usuario incorrecto");
+            statusLabel.setText("Usuario o contraseña incorrecto");
             statusLabel.setStyle("-fx-text-fill:red;");
         }
     }

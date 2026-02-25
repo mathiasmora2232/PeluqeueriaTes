@@ -9,7 +9,7 @@
 <?import javafx.scene.text.Text?>
 
 <VBox alignment="CENTER" prefHeight="600.0" prefWidth="400.0" spacing="20.0"
-      stylesheets="@/peluqueria/css/login.css"
+      stylesheets="@/peluqueria/Css/Login.css"
       styleClass="background"
       xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="peluqueria.Controllers.LoginController">
