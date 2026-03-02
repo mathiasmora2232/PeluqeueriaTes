@@ -25,7 +25,7 @@ public class PeluqeueriaTes extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("/peluqueria/Vistas/PublicScheduling.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/peluqueria/Vistas/Agendamiento.fxml"));
         primaryStage.setTitle("Sistema Peluqueria - Agendar Cita");
         primaryStage.setScene(new Scene(root));
         primaryStage.show();

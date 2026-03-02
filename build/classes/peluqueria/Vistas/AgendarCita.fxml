@@ -105,7 +105,11 @@
         </VBox>
 
         <!-- TABLA DE CITAS AGENDADAS -->
-        <Label text="Citas Agendadas" styleClass="subtitulo"/>
+        <HBox spacing="15" alignment="CENTER_LEFT">
+            <Label text="Citas Agendadas" styleClass="subtitulo"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button text="🔄 Refrescar Estilistas" styleClass="btn-secundario" onAction="#refrescarDatos"/>
+        </HBox>
 
         <TableView fx:id="tablaCitas" styleClass="tabla-citas" VBox.vgrow="ALWAYS">
             <columns>

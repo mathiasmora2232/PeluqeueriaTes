@@ -16,7 +16,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
-public class PublicSchedulingController implements Initializable {
+public class Agendamiendo implements Initializable {
 
     @FXML private TextField txtNombre;
     @FXML private TextField txtTelefono;
