@@ -2,8 +2,10 @@ package peluqueria.Controllers;
 
 import java.net.URL;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -15,14 +17,19 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import peluqueria.Database.CitaDAO;
+import peluqueria.Database.EstilistaDAO;
+import peluqueria.Database.ServicioDAO;
+import peluqueria.Models.Estilista;
+import peluqueria.Models.Servicio;
 
 public class Agendamiendo implements Initializable {
 
     @FXML private TextField txtNombre;
     @FXML private TextField txtTelefono;
     @FXML private TextField txtEmail;
-    @FXML private ComboBox<String> cmbServicio;
-    @FXML private ComboBox<String> cmbEstilista;
+    @FXML private ComboBox<Servicio> cmbServicio;
+    @FXML private ComboBox<Estilista> cmbEstilista;
     @FXML private DatePicker dpFecha;
     @FXML private ComboBox<String> cmbHora;
     @FXML private Label lblMensaje;
@@ -30,31 +37,23 @@ public class Agendamiendo implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // Cargar servicios
-        cmbServicio.setItems(FXCollections.observableArrayList(
-            "Corte de Cabello",
-            "Tinte",
-            "Peinado",
-            "Alisado",
-            "Peinado con Ondas",
-            "Tratamiento Capilar"
-        ));
+        // Cargar servicios desde la base de datos
+        List<Servicio> servicios = ServicioDAO.obtenerTodos();
+        cmbServicio.setItems(FXCollections.observableArrayList(servicios));
 
-        // Cargar estilistas
-        cmbEstilista.setItems(FXCollections.observableArrayList(
-            "María",
-            "Ana",
-            "Laura",
-            "Patricia",
-            "Carolina"
-        ));
+        // Cargar estilistas desde la base de datos
+        List<Estilista> estilistas = EstilistaDAO.obtenerTodos();
+        cmbEstilista.setItems(FXCollections.observableArrayList(estilistas));
 
         // Cargar horas disponibles
-        cmbHora.setItems(FXCollections.observableArrayList(
-            "09:00", "09:30", "10:00", "10:30", "11:00", "11:30",
-            "12:00", "12:30", "13:00", "13:30", "14:00", "14:30",
-            "15:00", "15:30", "16:00", "16:30", "17:00", "17:30", "18:00"
-        ));
+        ObservableList<String> horarios = FXCollections.observableArrayList();
+        for (int h = 9; h <= 18; h++) {
+            horarios.add(String.format("%02d:00", h));
+            if (h < 18) {
+                horarios.add(String.format("%02d:30", h));
+            }
+        }
+        cmbHora.setItems(horarios);
 
         // Configurar fecha mínima
         dpFecha.setValue(LocalDate.now());
@@ -72,10 +71,6 @@ public class Agendamiendo implements Initializable {
         String nombre = txtNombre.getText().trim();
         String telefono = txtTelefono.getText().trim();
         String email = txtEmail.getText().trim();
-        String servicio = cmbServicio.getValue();
-        String estilista = cmbEstilista.getValue();
-        LocalDate fecha = dpFecha.getValue();
-        String hora = cmbHora.getValue();
 
         // Validaciones
         if (nombre.isEmpty() || telefono.isEmpty() || email.isEmpty()) {
@@ -83,7 +78,8 @@ public class Agendamiendo implements Initializable {
             return;
         }
 
-        if (servicio == null || estilista == null || fecha == null || hora == null) {
+        if (cmbServicio.getValue() == null || cmbEstilista.getValue() == null
+                || dpFecha.getValue() == null || cmbHora.getValue() == null) {
             mostrarMensaje("Por favor seleccione todos los detalles de la cita", "error");
             return;
         }
@@ -94,9 +90,32 @@ public class Agendamiendo implements Initializable {
             return;
         }
 
-        // TODO: Guardar en base de datos
-        mostrarMensaje("¡Cita agendada exitosamente! Nos contactaremos pronto para confirmar.", "success");
-        limpiar();
+        // Obtener o crear cliente en la BD
+        int clienteId = CitaDAO.obtenerOCrearCliente(nombre, telefono, email);
+
+        if (clienteId == -1) {
+            mostrarMensaje("Error al registrar los datos del cliente", "error");
+            return;
+        }
+
+        // Guardar cita en la base de datos
+        Servicio servicioSeleccionado = cmbServicio.getValue();
+        Estilista estilistaSeleccionado = cmbEstilista.getValue();
+
+        boolean guardado = CitaDAO.crear(
+            clienteId,
+            servicioSeleccionado.getId(),
+            dpFecha.getValue(),
+            cmbHora.getValue(),
+            "Estilista: " + estilistaSeleccionado.getNombre()
+        );
+
+        if (guardado) {
+            mostrarMensaje("¡Cita agendada exitosamente! Nos contactaremos pronto para confirmar.", "success");
+            limpiar();
+        } else {
+            mostrarMensaje("Error al agendar la cita. Intente nuevamente.", "error");
+        }
     }
 
     @FXML
@@ -135,7 +154,7 @@ public class Agendamiendo implements Initializable {
         lblMensaje.setText(mensaje);
         lblMensaje.getStyleClass().remove("lbl-error");
         lblMensaje.getStyleClass().remove("lbl-success");
-        
+
         if (tipo.equals("success")) {
             lblMensaje.getStyleClass().add("lbl-success");
         } else if (tipo.equals("error")) {

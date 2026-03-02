@@ -2,7 +2,6 @@ package peluqueria.Controllers;
 
 import java.net.URL;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
@@ -20,6 +19,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
+import peluqueria.Database.CitaDAO;
 import peluqueria.Database.EstilistaDAO;
 import peluqueria.Database.ServicioDAO;
 import peluqueria.Models.Estilista;
@@ -61,6 +61,9 @@ public class AgendarCitaController implements Initializable {
         colEstado.setCellValueFactory(new PropertyValueFactory<>("estado"));
 
         tablaCitas.setItems(listaCitas);
+
+        // Cargar citas existentes desde la base de datos
+        cargarCitasDesdeDB();
     }
 
     // Método para cargar servicios y estilistas
@@ -134,20 +137,50 @@ public class AgendarCitaController implements Initializable {
             return;
         }
 
-        // Crear cita y agregar a la tabla
-        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        Cita nuevaCita = new Cita(
-            txtNombre.getText(),
-            cmbServicio.getValue().getNombre(),
-            cmbEstilista.getValue().getNombre(),
-            dpFecha.getValue().format(fmt),
-            cmbHora.getValue(),
-            "Pendiente"
+        // Obtener o crear cliente en la BD
+        int clienteId = CitaDAO.obtenerOCrearCliente(
+            txtNombre.getText().trim(),
+            txtTelefono.getText().trim(),
+            ""
         );
 
-        listaCitas.add(nuevaCita);
-        mostrarMensaje("Cita agendada exitosamente!", false);
-        limpiarFormulario();
+        if (clienteId == -1) {
+            mostrarMensaje("Error al registrar el cliente", true);
+            return;
+        }
+
+        // Guardar cita en la base de datos
+        boolean guardado = CitaDAO.crear(
+            clienteId,
+            cmbServicio.getValue().getId(),
+            dpFecha.getValue(),
+            cmbHora.getValue(),
+            "Estilista: " + cmbEstilista.getValue().getNombre()
+        );
+
+        if (guardado) {
+            mostrarMensaje("Cita agendada exitosamente!", false);
+            limpiarFormulario();
+            cargarCitasDesdeDB();
+        } else {
+            mostrarMensaje("Error al guardar la cita", true);
+        }
+    }
+
+    // Cargar citas existentes desde la base de datos
+    private void cargarCitasDesdeDB() {
+        listaCitas.clear();
+        List<String[]> citasDB = CitaDAO.obtenerTodas();
+        for (String[] fila : citasDB) {
+            listaCitas.add(new Cita(
+                fila[1], // cliente
+                fila[2], // servicio
+                "",      // estilista (guardado en observaciones)
+                fila[3], // fecha
+                fila[4], // hora
+                fila[5]  // estado
+            ));
+        }
     }
 
     @FXML
