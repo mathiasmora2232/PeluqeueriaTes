@@ -66,21 +66,41 @@ public class ClientesController implements Initializable {
 
     @FXML
     private void guardarCliente() {
-        if (txtNombre.getText().isEmpty()) {
+        String nombre = txtNombre.getText().trim();
+        String telefono = txtTelefono.getText().trim();
+        String email = txtEmail.getText().trim();
+
+        if (nombre.isEmpty()) {
             mostrarMensaje("Ingrese el nombre del cliente", true);
             return;
         }
-        if (txtTelefono.getText().isEmpty()) {
+        if (!nombre.matches("[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+")) {
+            mostrarMensaje("El nombre solo debe contener letras", true);
+            return;
+        }
+        if (telefono.isEmpty()) {
             mostrarMensaje("Ingrese el telefono", true);
+            return;
+        }
+        if (!telefono.matches("[0-9\\-\\+]+")) {
+            mostrarMensaje("El telefono solo debe contener numeros", true);
+            return;
+        }
+        if (telefono.replaceAll("[^0-9]", "").length() < 7) {
+            mostrarMensaje("El telefono debe tener al menos 7 digitos", true);
+            return;
+        }
+        if (!email.isEmpty() && !email.matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,}$")) {
+            mostrarMensaje("Ingrese un email valido (ej: correo@ejemplo.com)", true);
             return;
         }
 
         Cliente nuevo = new Cliente(
-            txtNombre.getText(),
-            txtTelefono.getText(),
-            txtEmail.getText(),
-            txtDireccion.getText(),
-            txtNotas.getText()
+            nombre,
+            telefono,
+            email,
+            txtDireccion.getText().trim(),
+            txtNotas.getText().trim()
         );
 
         listaClientes.add(nuevo);
@@ -119,8 +139,21 @@ public class ClientesController implements Initializable {
     }
 
     @FXML private void irClientes() { }
-    @FXML private void irServicios() { }
-    @FXML private void irPagos() { }
+    @FXML private void irServicios() {
+        cargarVista("/peluqueria/Vistas/Servicios.fxml", "Sistema Peluqueria - Servicios");
+    }
+    @FXML private void irEstilistas() {
+        cargarVista("/peluqueria/Vistas/Estilistas.fxml", "Sistema Peluqueria - Estilistas");
+    }
+    @FXML private void irUsuarios() {
+        cargarVista("/peluqueria/Vistas/Usuarios.fxml", "Sistema Peluqueria - Usuarios");
+    }
+    @FXML private void irCaja() {
+        cargarVista("/peluqueria/Vistas/Caja.fxml", "Sistema Peluqueria - Caja");
+    }
+    @FXML private void irPagos() {
+        cargarVista("/peluqueria/Vistas/PagosFactura.fxml", "Sistema Peluqueria - Pagos");
+    }
 
     @FXML
     private void cerrarSesion() {
@@ -135,6 +168,7 @@ public class ClientesController implements Initializable {
             Stage stage = new Stage();
             stage.setScene(new Scene(root));
             stage.setTitle(titulo);
+            stage.setMaximized(true);
             stage.show();
 
             Stage actual = (Stage) txtNombre.getScene().getWindow();

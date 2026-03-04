@@ -28,6 +28,7 @@ public class PeluqeueriaTes extends Application {
         Parent root = FXMLLoader.load(getClass().getResource("/peluqueria/Vistas/Agendamiento.fxml"));
         primaryStage.setTitle("Sistema Peluqueria - Agendar Cita");
         primaryStage.setScene(new Scene(root));
+        primaryStage.setMaximized(true);
         primaryStage.show();
     }
 }

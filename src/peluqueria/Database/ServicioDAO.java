@@ -80,7 +80,6 @@ public class ServicioDAO {
             ps.setString(4, servicio.getDescripcion());
             
             ps.executeUpdate();
-            conn.commit(); // COMMIT explícito
             System.out.println("Servicio creado exitosamente: " + servicio.getNombre());
             return true;
         } catch (SQLException e) {
@@ -103,7 +102,6 @@ public class ServicioDAO {
             ps.setInt(5, servicio.getId());
             
             ps.executeUpdate();
-            conn.commit(); // COMMIT explícito
             System.out.println("Servicio actualizado exitosamente: " + servicio.getNombre());
             return true;
         } catch (SQLException e) {
@@ -121,7 +119,6 @@ public class ServicioDAO {
             
             ps.setInt(1, id);
             ps.executeUpdate();
-            conn.commit(); // COMMIT explícito
             System.out.println("Servicio eliminado exitosamente");
             return true;
         } catch (SQLException e) {

@@ -14,7 +14,7 @@
       stylesheets="@/peluqueria/Css/PublicScheduling.css"
       style="-fx-padding: 30; -fx-background-color: #f5f5f5;"
       xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="peluqueria.Controllers.PublicSchedulingController">
+      fx:controller="peluqueria.Controllers.Agendamiendo">
 
     <!-- Header con título y botón admin -->
     <HBox spacing="20.0" alignment="TOP_RIGHT">

@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<HBox prefHeight="700.0" prefWidth="1000.0"
+      stylesheets="@/peluqueria/Css/clientes.css"
+      xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="peluqueria.Controllers.CajaController">
+
+    <!-- SIDEBAR -->
+    <VBox prefWidth="200" styleClass="sidebar" spacing="5">
+        <padding>
+            <Insets top="20" bottom="20" left="10" right="10"/>
+        </padding>
+        <Label text="PELUQUERIA" styleClass="sidebar-title"/>
+        <Label text="Sistema de Gestion" styleClass="sidebar-subtitle"/>
+        <Region prefHeight="20"/>
+        <Button text="Inicio" styleClass="sidebar-btn" onAction="#irDashboard" maxWidth="Infinity"/>
+        <Button text="Citas" styleClass="sidebar-btn" onAction="#irCitas" maxWidth="Infinity"/>
+        <Button text="Clientes" styleClass="sidebar-btn" onAction="#irClientes" maxWidth="Infinity"/>
+        <Button text="Servicios" styleClass="sidebar-btn" onAction="#irServicios" maxWidth="Infinity"/>
+        <Button text="Estilistas" styleClass="sidebar-btn" onAction="#irEstilistas" maxWidth="Infinity"/>
+        <Button text="Usuarios" styleClass="sidebar-btn" onAction="#irUsuarios" maxWidth="Infinity"/>
+        <Button text="Caja" styleClass="sidebar-btn-active" onAction="#irCaja" maxWidth="Infinity"/>
+        <Button text="Pagos" styleClass="sidebar-btn" onAction="#irPagos" maxWidth="Infinity"/>
+        <Region VBox.vgrow="ALWAYS"/>
+        <Button text="Cerrar Sesion" styleClass="sidebar-btn-logout" onAction="#cerrarSesion" maxWidth="Infinity"/>
+    </VBox>
+
+    <!-- CONTENIDO -->
+    <VBox styleClass="contenido" spacing="12" HBox.hgrow="ALWAYS">
+        <padding>
+            <Insets top="25" right="25" bottom="25" left="25"/>
+        </padding>
+
+        <Label text="Caja - Nueva Factura" styleClass="titulo"/>
+        <Label text="Genere facturas para los servicios prestados" styleClass="fecha"/>
+
+        <!-- DATOS CLIENTE -->
+        <VBox styleClass="card" spacing="10">
+            <Label text="Datos del Cliente" styleClass="form-seccion"/>
+            <HBox spacing="15">
+                <VBox spacing="5" HBox.hgrow="ALWAYS">
+                    <Label text="Nombre" styleClass="label-form"/>
+                    <TextField fx:id="txtClienteNombre" promptText="Nombre del cliente" styleClass="campo-texto"/>
+                </VBox>
+                <VBox spacing="5" HBox.hgrow="ALWAYS">
+                    <Label text="Telefono" styleClass="label-form"/>
+                    <TextField fx:id="txtClienteTelefono" promptText="Telefono del cliente" styleClass="campo-texto"/>
+                </VBox>
+            </HBox>
+        </VBox>
+
+        <!-- AGREGAR SERVICIOS -->
+        <VBox styleClass="card" spacing="10">
+            <Label text="Agregar Servicios" styleClass="form-seccion"/>
+            <HBox spacing="15" alignment="CENTER_LEFT">
+                <VBox spacing="5" HBox.hgrow="ALWAYS">
+                    <Label text="Servicio" styleClass="label-form"/>
+                    <ComboBox fx:id="cmbServicio" promptText="Seleccione servicio" maxWidth="Infinity" styleClass="campo-texto"/>
+                </VBox>
+                <VBox spacing="5" HBox.hgrow="ALWAYS">
+                    <Label text="Estilista" styleClass="label-form"/>
+                    <ComboBox fx:id="cmbEstilista" promptText="Seleccione estilista" maxWidth="Infinity" styleClass="campo-texto"/>
+                </VBox>
+                <VBox spacing="5">
+                    <Label text="Precio" styleClass="label-form"/>
+                    <Label fx:id="lblPrecioServicio" text="$0.00" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #7C3AED; -fx-padding: 6 0 0 0;"/>
+                </VBox>
+                <VBox spacing="5">
+                    <Label text=" " styleClass="label-form"/>
+                    <Button text="+ Agregar" styleClass="btn-accion" onAction="#agregarServicio"/>
+                </VBox>
+            </HBox>
+        </VBox>
+
+        <!-- TABLA DETALLE -->
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Label text="Detalle de Factura" styleClass="subtitulo"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button text="Quitar Seleccionado" styleClass="btn-secundario" onAction="#quitarServicio"/>
+        </HBox>
+
+        <TableView fx:id="tablaDetalle" styleClass="tabla-citas" prefHeight="180">
+            <columns>
+                <TableColumn fx:id="colServicio" text="Servicio" prefWidth="200"/>
+                <TableColumn fx:id="colEstilista" text="Estilista" prefWidth="150"/>
+                <TableColumn fx:id="colPrecio" text="Precio" prefWidth="100"/>
+                <TableColumn fx:id="colCantidad" text="Cant." prefWidth="60"/>
+                <TableColumn fx:id="colSubtotal" text="Subtotal" prefWidth="100"/>
+            </columns>
+        </TableView>
+
+        <!-- TOTALES Y ACCIONES -->
+        <HBox spacing="20" alignment="CENTER_RIGHT">
+            <Label fx:id="lblMensaje" styleClass="mensaje" HBox.hgrow="ALWAYS"/>
+
+            <VBox spacing="5" style="-fx-padding: 10; -fx-background-color: white; -fx-background-radius: 8;">
+                <HBox spacing="10">
+                    <Label text="Subtotal:" style="-fx-font-weight: bold;"/>
+                    <Label fx:id="lblSubtotal" text="$0.00"/>
+                </HBox>
+                <HBox spacing="10">
+                    <Label text="IVA (12%):" style="-fx-font-weight: bold;"/>
+                    <Label fx:id="lblIVA" text="$0.00"/>
+                </HBox>
+                <HBox spacing="10">
+                    <Label text="TOTAL:" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #7C3AED;"/>
+                    <Label fx:id="lblTotal" text="$0.00" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #7C3AED;"/>
+                </HBox>
+            </VBox>
+
+            <VBox spacing="8">
+                <Button text="Limpiar Todo" styleClass="btn-secundario" onAction="#limpiarTodo" maxWidth="Infinity"/>
+                <Button text="GENERAR FACTURA" styleClass="btn-accion" onAction="#generarFactura"
+                        style="-fx-font-size: 14px; -fx-padding: 12 30;" maxWidth="Infinity"/>
+            </VBox>
+        </HBox>
+    </VBox>
+</HBox>

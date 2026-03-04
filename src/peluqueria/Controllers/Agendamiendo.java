@@ -77,16 +77,26 @@ public class Agendamiendo implements Initializable {
             mostrarMensaje("Por favor complete todos los datos personales", "error");
             return;
         }
+        if (!nombre.matches("[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+")) {
+            mostrarMensaje("El nombre solo debe contener letras", "error");
+            return;
+        }
+        if (!telefono.matches("[0-9\\-\\+]+")) {
+            mostrarMensaje("El telefono solo debe contener numeros", "error");
+            return;
+        }
+        if (telefono.replaceAll("[^0-9]", "").length() < 7) {
+            mostrarMensaje("El telefono debe tener al menos 7 digitos", "error");
+            return;
+        }
+        if (!email.matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,}$")) {
+            mostrarMensaje("Ingrese un email valido (ej: correo@ejemplo.com)", "error");
+            return;
+        }
 
         if (cmbServicio.getValue() == null || cmbEstilista.getValue() == null
                 || dpFecha.getValue() == null || cmbHora.getValue() == null) {
             mostrarMensaje("Por favor seleccione todos los detalles de la cita", "error");
-            return;
-        }
-
-        // Validar email básico
-        if (!email.contains("@")) {
-            mostrarMensaje("Ingrese un email válido", "error");
             return;
         }
 
@@ -142,6 +152,7 @@ public class Agendamiendo implements Initializable {
             Stage stage = new Stage();
             stage.setScene(new Scene(root));
             stage.setTitle("Sistema Peluquería - Admin Login");
+            stage.setMaximized(true);
             stage.show();
 
         } catch (Exception e) {

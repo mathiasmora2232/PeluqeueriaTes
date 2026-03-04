@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<HBox prefHeight="600.0" prefWidth="900.0"
+      stylesheets="@/peluqueria/Css/clientes.css"
+      xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="peluqueria.Controllers.UsuariosController">
+
+    <!-- SIDEBAR -->
+    <VBox prefWidth="200" styleClass="sidebar" spacing="5">
+        <padding>
+            <Insets top="20" bottom="20" left="10" right="10"/>
+        </padding>
+        <Label text="PELUQUERIA" styleClass="sidebar-title"/>
+        <Label text="Sistema de Gestion" styleClass="sidebar-subtitle"/>
+        <Region prefHeight="20"/>
+        <Button text="Inicio" styleClass="sidebar-btn" onAction="#irDashboard" maxWidth="Infinity"/>
+        <Button text="Citas" styleClass="sidebar-btn" onAction="#irCitas" maxWidth="Infinity"/>
+        <Button text="Clientes" styleClass="sidebar-btn" onAction="#irClientes" maxWidth="Infinity"/>
+        <Button text="Servicios" styleClass="sidebar-btn" onAction="#irServicios" maxWidth="Infinity"/>
+        <Button text="Estilistas" styleClass="sidebar-btn" onAction="#irEstilistas" maxWidth="Infinity"/>
+        <Button text="Usuarios" styleClass="sidebar-btn-active" onAction="#irUsuarios" maxWidth="Infinity"/>
+        <Button text="Caja" styleClass="sidebar-btn" onAction="#irCaja" maxWidth="Infinity"/>
+        <Button text="Pagos" styleClass="sidebar-btn" onAction="#irPagos" maxWidth="Infinity"/>
+        <Region VBox.vgrow="ALWAYS"/>
+        <Button text="Cerrar Sesion" styleClass="sidebar-btn-logout" onAction="#cerrarSesion" maxWidth="Infinity"/>
+    </VBox>
+
+    <!-- CONTENIDO -->
+    <VBox styleClass="contenido" spacing="15" HBox.hgrow="ALWAYS">
+        <padding>
+            <Insets top="25" right="25" bottom="25" left="25"/>
+        </padding>
+
+        <Label text="Gestion de Usuarios" styleClass="titulo"/>
+        <Label text="Registre y administre los usuarios del sistema" styleClass="fecha"/>
+
+        <!-- FORMULARIO -->
+        <VBox styleClass="card" spacing="15">
+            <Label text="Datos del Usuario" styleClass="form-seccion"/>
+
+            <GridPane hgap="15" vgap="12">
+                <columnConstraints>
+                    <ColumnConstraints percentWidth="33.33"/>
+                    <ColumnConstraints percentWidth="33.33"/>
+                    <ColumnConstraints percentWidth="33.33"/>
+                </columnConstraints>
+
+                <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                    <Label text="Username" styleClass="label-form"/>
+                    <TextField fx:id="txtUsername" promptText="Ej: admin01" styleClass="campo-texto"/>
+                </VBox>
+
+                <VBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                    <Label text="Password" styleClass="label-form"/>
+                    <TextField fx:id="txtPassword" promptText="Ingrese password" styleClass="campo-texto"/>
+                </VBox>
+
+                <VBox spacing="5" GridPane.columnIndex="2" GridPane.rowIndex="0">
+                    <Label text="Rol" styleClass="label-form"/>
+                    <ComboBox fx:id="cmbRol" promptText="Seleccione rol" maxWidth="Infinity" styleClass="campo-texto"/>
+                </VBox>
+            </GridPane>
+
+            <HBox spacing="10" alignment="CENTER_RIGHT">
+                <Label fx:id="lblMensaje" styleClass="mensaje"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button text="Limpiar" styleClass="btn-secundario" onAction="#limpiarFormulario"/>
+                <Button text="Eliminar" styleClass="btn-secundario" onAction="#eliminarUsuario"/>
+                <Button text="Editar" styleClass="btn-secundario" onAction="#editarUsuario"/>
+                <Button text="Guardar Nuevo" styleClass="btn-accion" onAction="#guardarUsuario"/>
+            </HBox>
+        </VBox>
+
+        <!-- TABLA -->
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Label text="Usuarios Registrados" styleClass="subtitulo"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <TextField fx:id="txtBuscar" promptText="Buscar usuario..." styleClass="campo-buscar"/>
+        </HBox>
+
+        <TableView fx:id="tablaUsuarios" styleClass="tabla-citas" VBox.vgrow="ALWAYS">
+            <columns>
+                <TableColumn fx:id="colUsername" text="Username" prefWidth="300"/>
+                <TableColumn fx:id="colRol" text="Rol" prefWidth="300"/>
+            </columns>
+        </TableView>
+    </VBox>
+</HBox>

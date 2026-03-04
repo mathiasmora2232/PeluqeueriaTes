@@ -52,6 +52,7 @@ public class DashboardController implements Initializable {
             Stage stage = new Stage();
             stage.setScene(new Scene(root));
             stage.setTitle("Sistema Peluqueria - Agendar Cita");
+            stage.setMaximized(true);
             stage.show();
 
             Stage actual = (Stage) lblBienvenida.getScene().getWindow();
@@ -72,6 +73,7 @@ public class DashboardController implements Initializable {
             Stage stage = new Stage();
             stage.setScene(new Scene(root));
             stage.setTitle("Sistema Peluqueria - Clientes");
+            stage.setMaximized(true);
             stage.show();
 
             Stage actual = (Stage) lblBienvenida.getScene().getWindow();
@@ -81,9 +83,41 @@ public class DashboardController implements Initializable {
         }
     }
 
-    @FXML private void irServicios() { }
+    @FXML private void irServicios() {
+        cargarVista("/peluqueria/Vistas/Servicios.fxml", "Sistema Peluqueria - Servicios");
+    }
 
-    @FXML private void irPagos() { }
+    @FXML private void irEstilistas() {
+        cargarVista("/peluqueria/Vistas/Estilistas.fxml", "Sistema Peluqueria - Estilistas");
+    }
+
+    @FXML private void irUsuarios() {
+        cargarVista("/peluqueria/Vistas/Usuarios.fxml", "Sistema Peluqueria - Usuarios");
+    }
+
+    @FXML private void irCaja() {
+        cargarVista("/peluqueria/Vistas/Caja.fxml", "Sistema Peluqueria - Caja");
+    }
+
+    @FXML private void irPagos() {
+        cargarVista("/peluqueria/Vistas/PagosFactura.fxml", "Sistema Peluqueria - Pagos");
+    }
+
+    private void cargarVista(String fxml, String titulo) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxml));
+            Parent root = loader.load();
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.setTitle(titulo);
+            stage.setMaximized(true);
+            stage.show();
+            Stage actual = (Stage) lblBienvenida.getScene().getWindow();
+            actual.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     // CERRAR SESION
     @FXML
@@ -97,6 +131,7 @@ public class DashboardController implements Initializable {
             Stage stage = new Stage();
             stage.setScene(new Scene(root));
             stage.setTitle("Sistema Peluqueria - Login");
+            stage.setMaximized(true);
             stage.show();
 
             Stage actual = (Stage) lblBienvenida.getScene().getWindow();

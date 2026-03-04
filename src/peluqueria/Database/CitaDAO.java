@@ -41,9 +41,7 @@ public class CitaDAO {
             ps.setString(3, email);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                int id = rs.getInt("id");
-                conn.commit();
-                return id;
+                return rs.getInt("id");
             }
             rs.close();
         } catch (SQLException e) {
@@ -72,7 +70,6 @@ public class CitaDAO {
             ps.setTime(4, Time.valueOf(LocalTime.parse(hora)));
             ps.setString(5, observaciones);
             ps.executeUpdate();
-            conn.commit();
             System.out.println("Cita creada exitosamente");
             return true;
         } catch (SQLException e) {

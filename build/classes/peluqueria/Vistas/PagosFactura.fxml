@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<HBox prefHeight="700.0" prefWidth="1000.0"
+      stylesheets="@/peluqueria/Css/clientes.css"
+      xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="peluqueria.Controllers.PagosController">
+
+    <!-- SIDEBAR -->
+    <VBox prefWidth="200" styleClass="sidebar" spacing="5">
+        <padding>
+            <Insets top="20" bottom="20" left="10" right="10"/>
+        </padding>
+        <Label text="PELUQUERIA" styleClass="sidebar-title"/>
+        <Label text="Sistema de Gestion" styleClass="sidebar-subtitle"/>
+        <Region prefHeight="20"/>
+        <Button text="Inicio" styleClass="sidebar-btn" onAction="#irDashboard" maxWidth="Infinity"/>
+        <Button text="Citas" styleClass="sidebar-btn" onAction="#irCitas" maxWidth="Infinity"/>
+        <Button text="Clientes" styleClass="sidebar-btn" onAction="#irClientes" maxWidth="Infinity"/>
+        <Button text="Servicios" styleClass="sidebar-btn" onAction="#irServicios" maxWidth="Infinity"/>
+        <Button text="Estilistas" styleClass="sidebar-btn" onAction="#irEstilistas" maxWidth="Infinity"/>
+        <Button text="Usuarios" styleClass="sidebar-btn" onAction="#irUsuarios" maxWidth="Infinity"/>
+        <Button text="Caja" styleClass="sidebar-btn" onAction="#irCaja" maxWidth="Infinity"/>
+        <Button text="Pagos" styleClass="sidebar-btn-active" onAction="#irPagos" maxWidth="Infinity"/>
+        <Region VBox.vgrow="ALWAYS"/>
+        <Button text="Cerrar Sesion" styleClass="sidebar-btn-logout" onAction="#cerrarSesion" maxWidth="Infinity"/>
+    </VBox>
+
+    <!-- CONTENIDO -->
+    <VBox styleClass="contenido" spacing="12" HBox.hgrow="ALWAYS">
+        <padding>
+            <Insets top="25" right="25" bottom="25" left="25"/>
+        </padding>
+
+        <Label text="Pagos - Facturas Pendientes" styleClass="titulo"/>
+        <Label text="Seleccione una factura pendiente para registrar el pago" styleClass="fecha"/>
+
+        <!-- TABLA FACTURAS PENDIENTES -->
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Label text="Facturas Pendientes" styleClass="subtitulo"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button text="Refrescar" styleClass="btn-secundario" onAction="#refrescar"/>
+        </HBox>
+
+        <TableView fx:id="tablaFacturas" styleClass="tabla-citas" prefHeight="200">
+            <columns>
+                <TableColumn fx:id="colId" text="#" prefWidth="50"/>
+                <TableColumn fx:id="colCliente" text="Cliente" prefWidth="180"/>
+                <TableColumn fx:id="colFecha" text="Fecha" prefWidth="150"/>
+                <TableColumn fx:id="colTotal" text="Total" prefWidth="100"/>
+                <TableColumn fx:id="colEstado" text="Estado" prefWidth="100"/>
+            </columns>
+        </TableView>
+
+        <!-- DETALLE DE FACTURA SELECCIONADA -->
+        <Label text="Detalle de Factura" styleClass="subtitulo"/>
+
+        <TableView fx:id="tablaDetalle" styleClass="tabla-citas" prefHeight="150">
+            <columns>
+                <TableColumn fx:id="colServicio" text="Servicio" prefWidth="200"/>
+                <TableColumn fx:id="colEstilista" text="Estilista" prefWidth="150"/>
+                <TableColumn fx:id="colPrecio" text="Precio" prefWidth="100"/>
+                <TableColumn fx:id="colSubtotal" text="Subtotal" prefWidth="100"/>
+            </columns>
+        </TableView>
+
+        <!-- PAGO -->
+        <VBox styleClass="card" spacing="12">
+            <HBox spacing="20" alignment="CENTER_LEFT">
+                <VBox spacing="5">
+                    <Label text="Factura" styleClass="label-form"/>
+                    <Label fx:id="lblFacturaInfo" text="Seleccione una factura" style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
+                </VBox>
+
+                <VBox spacing="5">
+                    <Label text="Total a Pagar" styleClass="label-form"/>
+                    <Label fx:id="lblTotalPagar" text="$0.00" style="-fx-font-weight: bold; -fx-font-size: 18px; -fx-text-fill: #7C3AED;"/>
+                </VBox>
+
+                <VBox spacing="5" HBox.hgrow="ALWAYS">
+                    <Label text="Metodo de Pago" styleClass="label-form"/>
+                    <ComboBox fx:id="cmbMetodoPago" promptText="Seleccione metodo" maxWidth="Infinity" styleClass="campo-texto"/>
+                </VBox>
+
+                <VBox spacing="5">
+                    <Label text=" " styleClass="label-form"/>
+                    <Button text="CONFIRMAR PAGO" styleClass="btn-accion" onAction="#confirmarPago"
+                            style="-fx-font-size: 14px; -fx-padding: 10 25;"/>
+                </VBox>
+            </HBox>
+
+            <Label fx:id="lblMensaje" styleClass="mensaje"/>
+        </VBox>
+    </VBox>
+</HBox>
