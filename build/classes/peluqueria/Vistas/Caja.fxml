@@ -9,6 +9,7 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
@@ -40,7 +41,8 @@
     </VBox>
 
     <!-- CONTENIDO -->
-    <VBox styleClass="contenido" spacing="12" HBox.hgrow="ALWAYS">
+    <ScrollPane fitToWidth="true" HBox.hgrow="ALWAYS" style="-fx-background-color: transparent;">
+    <VBox styleClass="contenido" spacing="12">
         <padding>
             <Insets top="25" right="25" bottom="25" left="25"/>
         </padding>
@@ -48,16 +50,31 @@
         <Label text="Caja - Nueva Factura" styleClass="titulo"/>
         <Label text="Genere facturas para los servicios prestados" styleClass="fecha"/>
 
+        <!-- SELECCIONAR CITA COMPLETADA -->
+        <VBox styleClass="card" spacing="10">
+            <Label text="Cargar desde Cita Completada" styleClass="form-seccion"/>
+            <HBox spacing="15" alignment="CENTER_LEFT">
+                <VBox spacing="5" HBox.hgrow="ALWAYS">
+                    <Label text="Cita completada (sin factura)" styleClass="label-form"/>
+                    <ComboBox fx:id="cmbCitaCompletada" promptText="Seleccione una cita completada..." maxWidth="Infinity" styleClass="campo-texto"/>
+                </VBox>
+                <VBox spacing="5">
+                    <Label text=" " styleClass="label-form"/>
+                    <Button text="Cargar Cita" styleClass="btn-accion" onAction="#cargarCita"/>
+                </VBox>
+            </HBox>
+        </VBox>
+
         <!-- DATOS CLIENTE -->
         <VBox styleClass="card" spacing="10">
             <Label text="Datos del Cliente" styleClass="form-seccion"/>
             <HBox spacing="15">
                 <VBox spacing="5" HBox.hgrow="ALWAYS">
-                    <Label text="Nombre" styleClass="label-form"/>
+                    <Label text="Nombre *" styleClass="label-form"/>
                     <TextField fx:id="txtClienteNombre" promptText="Nombre del cliente" styleClass="campo-texto"/>
                 </VBox>
                 <VBox spacing="5" HBox.hgrow="ALWAYS">
-                    <Label text="Telefono" styleClass="label-form"/>
+                    <Label text="Telefono *" styleClass="label-form"/>
                     <TextField fx:id="txtClienteTelefono" promptText="Telefono del cliente" styleClass="campo-texto"/>
                 </VBox>
             </HBox>
@@ -129,4 +146,5 @@
             </VBox>
         </HBox>
     </VBox>
+    </ScrollPane>
 </HBox>

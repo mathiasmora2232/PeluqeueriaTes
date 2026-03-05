@@ -111,6 +111,44 @@ public class CitaDAO {
         return citas;
     }
 
+    // Obtener citas completadas que aun no tienen factura asociada
+    public static List<String[]> obtenerCompletadasSinFactura() {
+        List<String[]> citas = new ArrayList<>();
+        String query = "SELECT c.id, cl.nombre AS cliente, cl.telefono, s.nombre AS servicio, " +
+                       "s.id AS servicio_id, s.precio, " +
+                       "COALESCE(e.nombre, '') AS estilista, c.estilista_id, " +
+                       "c.fecha, c.hora " +
+                       "FROM citas c " +
+                       "JOIN clientes cl ON c.cliente_id = cl.id " +
+                       "JOIN servicios s ON c.servicio_id = s.id " +
+                       "LEFT JOIN estilistas e ON c.estilista_id = e.id_usuario " +
+                       "WHERE c.estado = 'Completada' " +
+                       "AND c.id NOT IN (SELECT cita_id FROM facturas WHERE cita_id IS NOT NULL) " +
+                       "ORDER BY c.fecha DESC, c.hora DESC";
+        try (Connection conn = Conexion.getConexion();
+             PreparedStatement ps = conn.prepareStatement(query)) {
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                String[] fila = new String[10];
+                fila[0] = String.valueOf(rs.getInt("id"));           // cita_id
+                fila[1] = rs.getString("cliente");                    // nombre cliente
+                fila[2] = rs.getString("telefono");                   // telefono cliente
+                fila[3] = rs.getString("servicio");                   // nombre servicio
+                fila[4] = String.valueOf(rs.getInt("servicio_id"));   // servicio_id
+                fila[5] = rs.getBigDecimal("precio").toString();      // precio servicio
+                fila[6] = rs.getString("estilista");                  // nombre estilista
+                fila[7] = String.valueOf(rs.getInt("estilista_id"));  // estilista_id
+                fila[8] = rs.getDate("fecha").toLocalDate().toString();
+                fila[9] = rs.getTime("hora").toLocalTime().toString();
+                citas.add(fila);
+            }
+            rs.close();
+        } catch (SQLException e) {
+            System.err.println("Error al obtener citas completadas: " + e.getMessage());
+        }
+        return citas;
+    }
+
     // Actualizar estado de una cita
     public static boolean actualizarEstado(int citaId, String nuevoEstado) {
         String query = "UPDATE citas SET estado = ? WHERE id = ?";

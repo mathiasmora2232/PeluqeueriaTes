@@ -25,7 +25,16 @@ ALTER TABLE clientes ADD COLUMN IF NOT EXISTS estado VARCHAR(20) DEFAULT 'Activo
 ALTER TABLE servicios ADD COLUMN IF NOT EXISTS estado VARCHAR(20) DEFAULT 'Activo';
 ALTER TABLE usuarios ADD COLUMN IF NOT EXISTS estado VARCHAR(20) DEFAULT 'Activo';
 
--- 3. Email UNIQUE en clientes (limpiar vacios primero)
+-- 3. Agregar cita_id a facturas (vincular factura con cita completada)
+ALTER TABLE facturas ADD COLUMN IF NOT EXISTS cita_id INTEGER;
+DO $$ BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'fk_facturas_cita') THEN
+        ALTER TABLE facturas ADD CONSTRAINT fk_facturas_cita
+            FOREIGN KEY (cita_id) REFERENCES citas(id);
+    END IF;
+END $$;
+
+-- 4. Email UNIQUE en clientes (limpiar vacios primero)
 UPDATE clientes SET email = NULL WHERE email = '';
 DO $$ BEGIN
     IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'uq_clientes_email') THEN

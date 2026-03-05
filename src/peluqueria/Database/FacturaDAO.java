@@ -11,15 +11,25 @@ import peluqueria.Models.Factura;
 
 public class FacturaDAO {
 
-    // Crear factura y retornar su id
+    // Crear factura y retornar su id (sin cita asociada)
     public static int crear(int clienteId, BigDecimal subtotal, BigDecimal impuesto, BigDecimal total) {
-        String query = "INSERT INTO facturas (cliente_id, subtotal, impuesto, total, estado) VALUES (?, ?, ?, ?, 'PENDIENTE') RETURNING id";
+        return crear(clienteId, subtotal, impuesto, total, -1);
+    }
+
+    // Crear factura con cita asociada y retornar su id
+    public static int crear(int clienteId, BigDecimal subtotal, BigDecimal impuesto, BigDecimal total, int citaId) {
+        String query = citaId > 0
+            ? "INSERT INTO facturas (cliente_id, subtotal, impuesto, total, estado, cita_id) VALUES (?, ?, ?, ?, 'PENDIENTE', ?) RETURNING id"
+            : "INSERT INTO facturas (cliente_id, subtotal, impuesto, total, estado) VALUES (?, ?, ?, ?, 'PENDIENTE') RETURNING id";
         try (Connection conn = Conexion.getConexion();
              PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setInt(1, clienteId);
             ps.setBigDecimal(2, subtotal);
             ps.setBigDecimal(3, impuesto);
             ps.setBigDecimal(4, total);
+            if (citaId > 0) {
+                ps.setInt(5, citaId);
+            }
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
                 int id = rs.getInt("id");

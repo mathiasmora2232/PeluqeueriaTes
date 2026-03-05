@@ -30,6 +30,9 @@ import peluqueria.Models.Servicio;
 
 public class CajaController implements Initializable {
 
+    // Cita completada
+    @FXML private ComboBox<String> cmbCitaCompletada;
+
     // Cliente
     @FXML private TextField txtClienteNombre;
     @FXML private TextField txtClienteTelefono;
@@ -55,6 +58,10 @@ public class CajaController implements Initializable {
 
     private ObservableList<FacturaDetalle> listaDetalle = FXCollections.observableArrayList();
     private static final BigDecimal TASA_IVA = new BigDecimal("0.15");
+
+    // Datos de citas completadas cargadas del DAO
+    private List<String[]> citasCompletadas;
+    private int citaIdSeleccionada = -1;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -82,7 +89,59 @@ public class CajaController implements Initializable {
             }
         });
 
+        // Cargar citas completadas sin factura
+        cargarCitasCompletadas();
+
         actualizarTotales();
+    }
+
+    private void cargarCitasCompletadas() {
+        citasCompletadas = CitaDAO.obtenerCompletadasSinFactura();
+        ObservableList<String> items = FXCollections.observableArrayList();
+        for (String[] cita : citasCompletadas) {
+            // formato: "Cita #ID - Cliente - Servicio (Fecha Hora)"
+            items.add("Cita #" + cita[0] + " - " + cita[1] + " - " + cita[3] + " (" + cita[8] + " " + cita[9] + ")");
+        }
+        cmbCitaCompletada.setItems(items);
+    }
+
+    @FXML
+    private void cargarCita() {
+        int idx = cmbCitaCompletada.getSelectionModel().getSelectedIndex();
+        if (idx < 0) {
+            mostrarMensaje("Seleccione una cita completada", true);
+            return;
+        }
+
+        String[] cita = citasCompletadas.get(idx);
+        // cita[0]=id, [1]=cliente, [2]=telefono, [3]=servicio, [4]=servicio_id,
+        // [5]=precio, [6]=estilista, [7]=estilista_id, [8]=fecha, [9]=hora
+
+        // Limpiar detalle actual
+        listaDetalle.clear();
+        citaIdSeleccionada = Integer.parseInt(cita[0]);
+
+        // Llenar datos del cliente
+        txtClienteNombre.setText(cita[1]);
+        txtClienteTelefono.setText(cita[2]);
+        txtClienteNombre.setEditable(false);
+        txtClienteTelefono.setEditable(false);
+        txtClienteNombre.setStyle("-fx-opacity: 0.7;");
+        txtClienteTelefono.setStyle("-fx-opacity: 0.7;");
+
+        // Agregar el servicio de la cita como detalle
+        FacturaDetalle detalle = new FacturaDetalle(
+            Integer.parseInt(cita[4]),  // servicioId
+            cita[3],                     // servicioNombre
+            Integer.parseInt(cita[7]),  // estilistaId
+            cita[6],                     // estilistaNombre
+            new BigDecimal(cita[5]),    // precio
+            1                            // cantidad
+        );
+        listaDetalle.add(detalle);
+        actualizarTotales();
+
+        mostrarMensaje("Cita #" + cita[0] + " cargada. Puede agregar mas servicios si desea.", false);
     }
 
     @FXML
@@ -171,11 +230,7 @@ public class CajaController implements Initializable {
         }
 
         // Obtener o crear cliente
-        int clienteId = CitaDAO.obtenerOCrearCliente(
-            txtClienteNombre.getText().trim(),
-            txtClienteTelefono.getText().trim(),
-            ""
-        );
+        int clienteId = CitaDAO.obtenerOCrearCliente(nombre, telefono, "");
 
         if (clienteId == -1) {
             mostrarMensaje("Error al registrar cliente", true);
@@ -190,8 +245,8 @@ public class CajaController implements Initializable {
         BigDecimal iva = subtotal.multiply(TASA_IVA).setScale(2, RoundingMode.HALF_UP);
         BigDecimal total = subtotal.add(iva);
 
-        // Crear factura
-        int facturaId = FacturaDAO.crear(clienteId, subtotal, iva, total);
+        // Crear factura (con o sin cita asociada)
+        int facturaId = FacturaDAO.crear(clienteId, subtotal, iva, total, citaIdSeleccionada);
         if (facturaId == -1) {
             mostrarMensaje("Error al crear factura", true);
             return;
@@ -217,11 +272,19 @@ public class CajaController implements Initializable {
     private void limpiarTodo() {
         txtClienteNombre.clear();
         txtClienteTelefono.clear();
+        txtClienteNombre.setEditable(true);
+        txtClienteTelefono.setEditable(true);
+        txtClienteNombre.setStyle("");
+        txtClienteTelefono.setStyle("");
         cmbServicio.setValue(null);
         cmbEstilista.setValue(null);
+        cmbCitaCompletada.setValue(null);
         lblPrecioServicio.setText("$0.00");
         listaDetalle.clear();
+        citaIdSeleccionada = -1;
         actualizarTotales();
+        // Recargar citas completadas
+        cargarCitasCompletadas();
     }
 
     private void mostrarMensaje(String mensaje, boolean esError) {
