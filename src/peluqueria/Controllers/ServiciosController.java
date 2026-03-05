@@ -92,7 +92,11 @@ public class ServiciosController implements Initializable {
             mostrarMensaje("Precio invalido. Use formato: 15.00", true);
             return;
         }
-        if (!txtDuracion.getText().trim().isEmpty() && !txtDuracion.getText().trim().matches("[0-9]+")) {
+        if (txtDuracion.getText().trim().isEmpty()) {
+            mostrarMensaje("Ingrese la duracion en minutos", true);
+            return;
+        }
+        if (!txtDuracion.getText().trim().matches("[0-9]+")) {
             mostrarMensaje("La duracion debe ser un numero entero en minutos", true);
             return;
         }
@@ -103,7 +107,11 @@ public class ServiciosController implements Initializable {
                 mostrarMensaje("El precio debe ser mayor a 0", true);
                 return;
             }
-            int duracion = txtDuracion.getText().trim().isEmpty() ? 0 : Integer.parseInt(txtDuracion.getText().trim());
+            int duracion = Integer.parseInt(txtDuracion.getText().trim());
+            if (duracion <= 0) {
+                mostrarMensaje("La duracion debe ser mayor a 0", true);
+                return;
+            }
 
             Servicio nuevo = new Servicio(
                 txtNombre.getText().trim(),
@@ -142,7 +150,11 @@ public class ServiciosController implements Initializable {
             mostrarMensaje("Precio invalido. Use formato: 15.00", true);
             return;
         }
-        if (!txtDuracion.getText().trim().isEmpty() && !txtDuracion.getText().trim().matches("[0-9]+")) {
+        if (txtDuracion.getText().trim().isEmpty()) {
+            mostrarMensaje("Ingrese la duracion en minutos", true);
+            return;
+        }
+        if (!txtDuracion.getText().trim().matches("[0-9]+")) {
             mostrarMensaje("La duracion debe ser un numero entero en minutos", true);
             return;
         }
@@ -153,7 +165,11 @@ public class ServiciosController implements Initializable {
                 mostrarMensaje("El precio debe ser mayor a 0", true);
                 return;
             }
-            int duracion = txtDuracion.getText().trim().isEmpty() ? 0 : Integer.parseInt(txtDuracion.getText().trim());
+            int duracion = Integer.parseInt(txtDuracion.getText().trim());
+            if (duracion <= 0) {
+                mostrarMensaje("La duracion debe ser mayor a 0", true);
+                return;
+            }
 
             servicioSeleccionado.setNombre(txtNombre.getText().trim());
             servicioSeleccionado.setPrecio(precio);

@@ -6,6 +6,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -66,7 +67,7 @@
 
                 <VBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="0">
                     <Label text="Password *" styleClass="label-form"/>
-                    <TextField fx:id="txtPassword" promptText="Ingrese password" styleClass="campo-texto"/>
+                    <PasswordField fx:id="txtPassword" promptText="Ingrese password" styleClass="campo-texto"/>
                 </VBox>
 
                 <VBox spacing="5" GridPane.columnIndex="2" GridPane.rowIndex="0">
@@ -79,7 +80,7 @@
                 <Label fx:id="lblMensaje" styleClass="mensaje"/>
                 <Region HBox.hgrow="ALWAYS"/>
                 <Button text="Limpiar" styleClass="btn-secundario" onAction="#limpiarFormulario"/>
-                <Button text="Eliminar" styleClass="btn-secundario" onAction="#eliminarUsuario"/>
+                <Button text="Desactivar" styleClass="btn-secundario" onAction="#eliminarUsuario"/>
                 <Button text="Editar Contrasena" styleClass="btn-secundario" onAction="#habilitarEdicionPassword"/>
                 <Button text="Guardar Cambios" styleClass="btn-secundario" onAction="#editarUsuario"/>
                 <Button text="Guardar Nuevo" styleClass="btn-accion" onAction="#guardarUsuario"/>

@@ -68,7 +68,7 @@
                 </VBox>
 
                 <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="1">
-                    <Label text="Duracion (minutos)" styleClass="label-form"/>
+                    <Label text="Duracion (minutos) *" styleClass="label-form"/>
                     <TextField fx:id="txtDuracion" promptText="Ej: 30" styleClass="campo-texto"/>
                 </VBox>
 
@@ -82,7 +82,7 @@
                 <Label fx:id="lblMensaje" styleClass="mensaje"/>
                 <Region HBox.hgrow="ALWAYS"/>
                 <Button text="Limpiar" styleClass="btn-secundario" onAction="#limpiarFormulario"/>
-                <Button text="Eliminar" styleClass="btn-secundario" onAction="#eliminarServicio"/>
+                <Button text="Desactivar" styleClass="btn-secundario" onAction="#eliminarServicio"/>
                 <Button text="Editar" styleClass="btn-secundario" onAction="#editarServicio"/>
                 <Button text="Guardar Nuevo" styleClass="btn-accion" onAction="#guardarServicio"/>
             </HBox>

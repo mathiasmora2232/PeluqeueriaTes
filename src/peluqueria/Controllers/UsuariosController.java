@@ -17,6 +17,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -27,7 +28,7 @@ import peluqueria.Models.Usuario;
 public class UsuariosController implements Initializable {
 
     @FXML private TextField txtUsername;
-    @FXML private TextField txtPassword;
+    @FXML private PasswordField txtPassword;
     @FXML private ComboBox<String> cmbRol;
     @FXML private TextField txtBuscar;
     @FXML private Label lblMensaje;

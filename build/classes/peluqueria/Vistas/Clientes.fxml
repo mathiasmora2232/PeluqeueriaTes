@@ -2,6 +2,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
@@ -76,19 +77,14 @@
                 </VBox>
 
                 <VBox spacing="5" GridPane.columnIndex="2" GridPane.rowIndex="0">
-                    <Label text="Email *" styleClass="label-form"/>
+                    <Label text="Email" styleClass="label-form"/>
                     <TextField fx:id="txtEmail" promptText="Ej: maria@email.com" styleClass="campo-texto"/>
                 </VBox>
 
-                <!-- Fila 2: Direccion y Notas -->
-                <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.columnSpan="2">
-                    <Label text="Direccion" styleClass="label-form"/>
-                    <TextField fx:id="txtDireccion" promptText="Ej: Av. Principal #123" styleClass="campo-texto"/>
-                </VBox>
-
-                <VBox spacing="5" GridPane.columnIndex="2" GridPane.rowIndex="1">
-                    <Label text="Notas" styleClass="label-form"/>
-                    <TextField fx:id="txtNotas" promptText="Ej: Alergica a tintes" styleClass="campo-texto"/>
+                <!-- Fila 2: Genero -->
+                <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                    <Label text="Genero" styleClass="label-form"/>
+                    <ComboBox fx:id="cmbGenero" promptText="Seleccione genero" maxWidth="Infinity" styleClass="campo-texto"/>
                 </VBox>
             </GridPane>
 
@@ -97,7 +93,9 @@
                 <Label fx:id="lblMensaje" styleClass="mensaje"/>
                 <Region HBox.hgrow="ALWAYS"/>
                 <Button text="Limpiar" styleClass="btn-secundario" onAction="#limpiarFormulario"/>
-                <Button text="Guardar Cliente" styleClass="btn-accion" onAction="#guardarCliente"/>
+                <Button text="Editar" styleClass="btn-secundario" onAction="#editarCliente"/>
+                <Button text="Desactivar" styleClass="btn-secundario" onAction="#eliminarCliente"/>
+                <Button text="Guardar Nuevo" styleClass="btn-accion" onAction="#guardarCliente"/>
             </HBox>
         </VBox>
 
@@ -110,11 +108,12 @@
 
         <TableView fx:id="tablaClientes" styleClass="tabla-citas" VBox.vgrow="ALWAYS">
             <columns>
-                <TableColumn fx:id="colNombre" text="Nombre" prefWidth="160"/>
-                <TableColumn fx:id="colTelefono" text="Telefono" prefWidth="120"/>
-                <TableColumn fx:id="colEmail" text="Email" prefWidth="170"/>
-                <TableColumn fx:id="colDireccion" text="Direccion" prefWidth="160"/>
-                <TableColumn fx:id="colNotas" text="Notas" prefWidth="140"/>
+                <TableColumn fx:id="colNombre" text="Nombre" prefWidth="150"/>
+                <TableColumn fx:id="colTelefono" text="Telefono" prefWidth="110"/>
+                <TableColumn fx:id="colEmail" text="Email" prefWidth="160"/>
+                <TableColumn fx:id="colGenero" text="Genero" prefWidth="90"/>
+                <TableColumn fx:id="colFechaRegistro" text="Fecha Registro" prefWidth="110"/>
+                <TableColumn fx:id="colEstado" text="Estado" prefWidth="80"/>
             </columns>
         </TableView>
 

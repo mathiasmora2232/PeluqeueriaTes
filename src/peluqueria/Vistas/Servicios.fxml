@@ -68,7 +68,7 @@
                 </VBox>
 
                 <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="1">
-                    <Label text="Duracion (minutos)" styleClass="label-form"/>
+                    <Label text="Duracion (minutos) *" styleClass="label-form"/>
                     <TextField fx:id="txtDuracion" promptText="Ej: 30" styleClass="campo-texto"/>
                 </VBox>
 
