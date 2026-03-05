@@ -66,17 +66,17 @@
 
                 <!-- Fila 1: Nombre, Telefono, Email -->
                 <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="0">
-                    <Label text="Nombre Completo" styleClass="label-form"/>
+                    <Label text="Nombre Completo *" styleClass="label-form"/>
                     <TextField fx:id="txtNombre" promptText="Ej: Maria Lopez" styleClass="campo-texto"/>
                 </VBox>
 
                 <VBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="0">
-                    <Label text="Telefono" styleClass="label-form"/>
+                    <Label text="Telefono *" styleClass="label-form"/>
                     <TextField fx:id="txtTelefono" promptText="Ej: 0999-123-456" styleClass="campo-texto"/>
                 </VBox>
 
                 <VBox spacing="5" GridPane.columnIndex="2" GridPane.rowIndex="0">
-                    <Label text="Email" styleClass="label-form"/>
+                    <Label text="Email *" styleClass="label-form"/>
                     <TextField fx:id="txtEmail" promptText="Ej: maria@email.com" styleClass="campo-texto"/>
                 </VBox>
 

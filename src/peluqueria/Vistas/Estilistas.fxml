@@ -60,17 +60,17 @@
                 </columnConstraints>
 
                 <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="0">
-                    <Label text="Nombre" styleClass="label-form"/>
+                    <Label text="Nombre *" styleClass="label-form"/>
                     <TextField fx:id="txtNombre" promptText="Ej: Maria Lopez" styleClass="campo-texto"/>
                 </VBox>
 
                 <VBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="0">
-                    <Label text="Telefono" styleClass="label-form"/>
+                    <Label text="Teléfono *" styleClass="label-form"/>
                     <TextField fx:id="txtTelefono" promptText="Ej: 0999-123-456" styleClass="campo-texto"/>
                 </VBox>
 
                 <VBox spacing="5" GridPane.columnIndex="2" GridPane.rowIndex="0">
-                    <Label text="Especialidad" styleClass="label-form"/>
+                    <Label text="Especialidad *" styleClass="label-form"/>
                     <TextField fx:id="txtEspecialidad" promptText="Ej: Colorimetria" styleClass="campo-texto"/>
                 </VBox>
 
@@ -80,12 +80,12 @@
                 </VBox>
 
                 <VBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="1">
-                    <Label text="Estado" styleClass="label-form"/>
+                    <Label text="Estado *" styleClass="label-form"/>
                     <ComboBox fx:id="cmbEstado" promptText="Seleccione estado" maxWidth="Infinity" styleClass="campo-texto"/>
                 </VBox>
 
                 <VBox spacing="5" GridPane.columnIndex="2" GridPane.rowIndex="1">
-                    <Label text="Usuario Asociado" styleClass="label-form"/>
+                    <Label text="Usuario Asociado *" styleClass="label-form"/>
                     <ComboBox fx:id="cmbUsuario" promptText="Seleccione usuario" maxWidth="Infinity" styleClass="campo-texto"/>
                 </VBox>
             </GridPane>
@@ -94,7 +94,6 @@
                 <Label fx:id="lblMensaje" styleClass="mensaje"/>
                 <Region HBox.hgrow="ALWAYS"/>
                 <Button text="Limpiar" styleClass="btn-secundario" onAction="#limpiarFormulario"/>
-                <Button text="Eliminar" styleClass="btn-secundario" onAction="#eliminarEstilista"/>
                 <Button text="Editar" styleClass="btn-secundario" onAction="#editarEstilista"/>
                 <Button text="Guardar Nuevo" styleClass="btn-accion" onAction="#guardarEstilista"/>
             </HBox>

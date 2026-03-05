@@ -73,8 +73,8 @@ public class EstilistasController implements Initializable {
             if (newVal != null) {
                 estilistaSeleccionado = newVal;
                 txtNombre.setText(newVal.getNombre());
-                txtTelefono.setText(newVal.getTelefono() != null ? newVal.getTelefono() : "");
-                txtEspecialidad.setText(newVal.getEspecialidad() != null ? newVal.getEspecialidad() : "");
+                txtTelefono.setText(newVal.getTelefono());
+                txtEspecialidad.setText(newVal.getEspecialidad());
                 txtExperiencia.setText(String.valueOf(newVal.getExperienciaAnios()));
                 cmbEstado.setValue(newVal.getEstado());
                 // Buscar el usuario asociado en el ComboBox
@@ -106,6 +106,7 @@ public class EstilistasController implements Initializable {
     private void guardarEstilista() {
         String nombre = txtNombre.getText().trim();
         String telefono = txtTelefono.getText().trim();
+        String especialidad = txtEspecialidad.getText().trim();
 
         if (nombre.isEmpty()) {
             mostrarMensaje("Ingrese el nombre", true);
@@ -115,23 +116,31 @@ public class EstilistasController implements Initializable {
             mostrarMensaje("El nombre solo debe contener letras", true);
             return;
         }
-        if (!telefono.isEmpty() && !telefono.matches("[0-9\\-\\+]+")) {
-            mostrarMensaje("El telefono solo debe contener numeros", true);
+        if (telefono.isEmpty()) {
+            mostrarMensaje("Ingrese un número de telefono", true);
             return;
         }
-        if (!telefono.isEmpty() && telefono.replaceAll("[^0-9]", "").length() < 7) {
+        if (!telefono.matches("[0-9\\-\\+]+")) {
+            mostrarMensaje("El telefono solo debe contener numeros", true);
+            return;
+        } 
+        if (telefono.replaceAll("[^0-9]", "").length() < 7) {
             mostrarMensaje("El telefono debe tener al menos 7 digitos", true);
+            return;
+        }
+        if (especialidad.isEmpty()) {
+            mostrarMensaje("Ingrese una especialidad", true);
+            return;
+        }
+           if (cmbEstado.getValue() == null) {
+            mostrarMensaje("Seleccione el estado", true);
             return;
         }
         if (cmbUsuario.getValue() == null) {
             mostrarMensaje("Seleccione un usuario asociado", true);
             return;
         }
-        if (cmbEstado.getValue() == null) {
-            mostrarMensaje("Seleccione el estado", true);
-            return;
-        }
-
+    
         int experiencia = 0;
         try {
             if (!txtExperiencia.getText().trim().isEmpty()) {
@@ -163,7 +172,7 @@ public class EstilistasController implements Initializable {
             mostrarMensaje("Error al crear estilista", true);
         }
     }
-
+   
     @FXML
     private void editarEstilista() {
         if (estilistaSeleccionado == null) {
@@ -172,6 +181,7 @@ public class EstilistasController implements Initializable {
         }
         String nombre = txtNombre.getText().trim();
         String telefono = txtTelefono.getText().trim();
+        String especialidad = txtEspecialidad.getText().trim();
 
         if (nombre.isEmpty()) {
             mostrarMensaje("Ingrese el nombre", true);
@@ -181,12 +191,28 @@ public class EstilistasController implements Initializable {
             mostrarMensaje("El nombre solo debe contener letras", true);
             return;
         }
-        if (!telefono.isEmpty() && !telefono.matches("[0-9\\-\\+]+")) {
-            mostrarMensaje("El telefono solo debe contener numeros", true);
+        if (telefono.isEmpty()) {
+            mostrarMensaje("Ingrese un número de telefono", true);
             return;
         }
-        if (!telefono.isEmpty() && telefono.replaceAll("[^0-9]", "").length() < 7) {
+        if (!telefono.matches("[0-9\\-\\+]+")) {
+            mostrarMensaje("El telefono solo debe contener numeros", true);
+            return;
+        } 
+        if (telefono.replaceAll("[^0-9]", "").length() < 7) {
             mostrarMensaje("El telefono debe tener al menos 7 digitos", true);
+            return;
+        }
+        if (especialidad.isEmpty()) {
+            mostrarMensaje("Ingrese una especialidad", true);
+            return;
+        }
+           if (cmbEstado.getValue() == null) {
+            mostrarMensaje("Seleccione el estado", true);
+            return;
+        }
+        if (cmbUsuario.getValue() == null) {
+            mostrarMensaje("Seleccione un usuario asociado", true);
             return;
         }
 
@@ -203,7 +229,7 @@ public class EstilistasController implements Initializable {
             mostrarMensaje("Experiencia debe ser un numero entero", true);
             return;
         }
-
+        
         estilistaSeleccionado.setNombre(txtNombre.getText().trim());
         estilistaSeleccionado.setTelefono(txtTelefono.getText().trim());
         estilistaSeleccionado.setEspecialidad(txtEspecialidad.getText().trim());
@@ -216,22 +242,6 @@ public class EstilistasController implements Initializable {
             cargarEstilistas();
         } else {
             mostrarMensaje("Error al actualizar estilista", true);
-        }
-    }
-
-    @FXML
-    private void eliminarEstilista() {
-        if (estilistaSeleccionado == null) {
-            mostrarMensaje("Seleccione un estilista de la tabla", true);
-            return;
-        }
-
-        if (EstilistaDAO.eliminar(estilistaSeleccionado.getIdUsuario())) {
-            mostrarMensaje("Estilista desactivado!", false);
-            limpiarFormulario();
-            cargarEstilistas();
-        } else {
-            mostrarMensaje("Error al eliminar estilista", true);
         }
     }
 

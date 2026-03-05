@@ -34,17 +34,17 @@
         
         <HBox spacing="20.0">
             <VBox spacing="5.0" HBox.hgrow="ALWAYS">
-                <Label text="Nombre Completo" styleClass="label-form"/>
+                <Label text="Nombre Completo *" styleClass="label-form"/>
                 <TextField fx:id="txtNombre" promptText="Ingrese su nombre" styleClass="text-field"/>
             </VBox>
             
             <VBox spacing="5.0" HBox.hgrow="ALWAYS">
-                <Label text="Teléfono" styleClass="label-form"/>
+                <Label text="Teléfono *" styleClass="label-form"/>
                 <TextField fx:id="txtTelefono" promptText="Ingrese su teléfono" styleClass="text-field"/>
             </VBox>
             
             <VBox spacing="5.0" HBox.hgrow="ALWAYS">
-                <Label text="Email" styleClass="label-form"/>
+                <Label text="Email *" styleClass="label-form"/>
                 <TextField fx:id="txtEmail" promptText="Ingrese su email" styleClass="text-field"/>
             </VBox>
         </HBox>
@@ -54,12 +54,12 @@
         
         <HBox spacing="20.0">
             <VBox spacing="5.0" HBox.hgrow="ALWAYS">
-                <Label text="Servicio" styleClass="label-form"/>
+                <Label text="Servicio *" styleClass="label-form"/>
                 <ComboBox fx:id="cmbServicio" prefWidth="150.0" styleClass="combo-box"/>
             </VBox>
             
             <VBox spacing="5.0" HBox.hgrow="ALWAYS">
-                <Label text="Estilista" styleClass="label-form"/>
+                <Label text="Estilista *" styleClass="label-form"/>
                 <ComboBox fx:id="cmbEstilista" prefWidth="150.0" styleClass="combo-box"/>
             </VBox>
             
@@ -69,7 +69,7 @@
             </VBox>
             
             <VBox spacing="5.0" HBox.hgrow="ALWAYS">
-                <Label text="Hora" styleClass="label-form"/>
+                <Label text="Hora *" styleClass="label-form"/>
                 <ComboBox fx:id="cmbHora" prefWidth="100.0" styleClass="combo-box"/>
             </VBox>
         </HBox>

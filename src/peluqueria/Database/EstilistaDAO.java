@@ -115,13 +115,13 @@ public class EstilistaDAO {
     }
 
     // Eliminar estilista (cambiar estado a Inactivo)
-    public static boolean eliminar(int idUsuario) {
+    public static boolean eliminar(String Estado) {
         String query = "UPDATE estilistas SET estado = 'Inactivo' WHERE id_usuario = ?";
         
         try (Connection conn = Conexion.getConexion();
              PreparedStatement ps = conn.prepareStatement(query)) {
             
-            ps.setInt(1, idUsuario);
+            ps.setString(5, Estado);
             ps.executeUpdate();
             System.out.println("Estilista eliminado exitosamente");
             return true;

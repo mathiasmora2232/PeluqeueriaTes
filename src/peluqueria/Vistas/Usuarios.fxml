@@ -60,17 +60,17 @@
                 </columnConstraints>
 
                 <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="0">
-                    <Label text="Username" styleClass="label-form"/>
+                    <Label text="Username *" styleClass="label-form"/>
                     <TextField fx:id="txtUsername" promptText="Ej: admin01" styleClass="campo-texto"/>
                 </VBox>
 
                 <VBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="0">
-                    <Label text="Password" styleClass="label-form"/>
+                    <Label text="Password *" styleClass="label-form"/>
                     <TextField fx:id="txtPassword" promptText="Ingrese password" styleClass="campo-texto"/>
                 </VBox>
 
                 <VBox spacing="5" GridPane.columnIndex="2" GridPane.rowIndex="0">
-                    <Label text="Rol" styleClass="label-form"/>
+                    <Label text="Rol *" styleClass="label-form"/>
                     <ComboBox fx:id="cmbRol" promptText="Seleccione rol" maxWidth="Infinity" styleClass="campo-texto"/>
                 </VBox>
             </GridPane>

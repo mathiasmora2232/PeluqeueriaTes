@@ -58,12 +58,12 @@
                 </columnConstraints>
 
                 <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="0">
-                    <Label text="Nombre" styleClass="label-form"/>
+                    <Label text="Nombre *" styleClass="label-form"/>
                     <TextField fx:id="txtNombre" promptText="Ej: Corte de Cabello" styleClass="campo-texto"/>
                 </VBox>
 
                 <VBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="0">
-                    <Label text="Precio" styleClass="label-form"/>
+                    <Label text="Precio *" styleClass="label-form"/>
                     <TextField fx:id="txtPrecio" promptText="Ej: 15.00" styleClass="campo-texto"/>
                 </VBox>
 
