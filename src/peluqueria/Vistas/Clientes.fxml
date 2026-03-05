@@ -36,6 +36,7 @@
         <Button text="Usuarios" styleClass="sidebar-btn" onAction="#irUsuarios" maxWidth="Infinity"/>
         <Button text="Caja" styleClass="sidebar-btn" onAction="#irCaja" maxWidth="Infinity"/>
         <Button text="Pagos" styleClass="sidebar-btn" onAction="#irPagos" maxWidth="Infinity"/>
+        <Button text="Facturacion" styleClass="sidebar-btn" onAction="#irFacturacion" maxWidth="Infinity"/>
 
         <Region VBox.vgrow="ALWAYS"/>
 

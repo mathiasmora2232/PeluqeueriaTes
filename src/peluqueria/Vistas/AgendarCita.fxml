@@ -38,6 +38,7 @@
         <Button text="Usuarios" styleClass="sidebar-btn" onAction="#irUsuarios" maxWidth="Infinity"/>
         <Button text="Caja" styleClass="sidebar-btn" onAction="#irCaja" maxWidth="Infinity"/>
         <Button text="Pagos" styleClass="sidebar-btn" onAction="#irPagos" maxWidth="Infinity"/>
+        <Button text="Facturacion" styleClass="sidebar-btn" onAction="#irFacturacion" maxWidth="Infinity"/>
 
         <Region VBox.vgrow="ALWAYS"/>
 
@@ -111,7 +112,9 @@
         <HBox spacing="15" alignment="CENTER_LEFT">
             <Label text="Citas Agendadas" styleClass="subtitulo"/>
             <Region HBox.hgrow="ALWAYS"/>
-            <Button text="🔄 Refrescar Estilistas" styleClass="btn-secundario" onAction="#refrescarDatos"/>
+            <ComboBox fx:id="cmbEstadoCita" promptText="Cambiar estado" styleClass="campo-combo" prefWidth="160"/>
+            <Button text="Cambiar Estado" styleClass="btn-accion" onAction="#cambiarEstado"/>
+            <Button text="Refrescar" styleClass="btn-secundario" onAction="#refrescarDatos"/>
         </HBox>
 
         <TableView fx:id="tablaCitas" styleClass="tabla-citas" VBox.vgrow="ALWAYS">

@@ -19,36 +19,31 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import peluqueria.Database.FacturaDAO;
 import peluqueria.Database.FacturaDetalleDAO;
-import peluqueria.Database.PagoDAO;
 import peluqueria.Models.Factura;
 import peluqueria.Models.FacturaDetalle;
 
-public class PagosController implements Initializable {
+public class FacturacionController implements Initializable {
 
-    // Tabla facturas pendientes
     @FXML private TableView<Factura> tablaFacturas;
     @FXML private TableColumn<Factura, Integer> colId;
     @FXML private TableColumn<Factura, String> colCliente;
     @FXML private TableColumn<Factura, String> colFecha;
+    @FXML private TableColumn<Factura, BigDecimal> colSubtotal;
+    @FXML private TableColumn<Factura, BigDecimal> colImpuesto;
     @FXML private TableColumn<Factura, BigDecimal> colTotal;
     @FXML private TableColumn<Factura, String> colEstado;
 
-    // Detalle de factura seleccionada
     @FXML private TableView<FacturaDetalle> tablaDetalle;
-    @FXML private TableColumn<FacturaDetalle, String> colServicio;
-    @FXML private TableColumn<FacturaDetalle, String> colEstilista;
-    @FXML private TableColumn<FacturaDetalle, BigDecimal> colPrecio;
-    @FXML private TableColumn<FacturaDetalle, BigDecimal> colSubtotal;
+    @FXML private TableColumn<FacturaDetalle, String> colDetServicio;
+    @FXML private TableColumn<FacturaDetalle, String> colDetEstilista;
+    @FXML private TableColumn<FacturaDetalle, BigDecimal> colDetPrecio;
+    @FXML private TableColumn<FacturaDetalle, BigDecimal> colDetSubtotal;
 
-    // Pago
-    @FXML private Label lblFacturaInfo;
-    @FXML private Label lblTotalPagar;
-    @FXML private ComboBox<String> cmbMetodoPago;
+    @FXML private ComboBox<String> cmbFiltroEstado;
     @FXML private Label lblMensaje;
 
     private ObservableList<Factura> listaFacturas = FXCollections.observableArrayList();
     private ObservableList<FacturaDetalle> listaDetalle = FXCollections.observableArrayList();
-    private Factura facturaSeleccionada = null;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -56,87 +51,66 @@ public class PagosController implements Initializable {
         colId.setCellValueFactory(new PropertyValueFactory<>("id"));
         colCliente.setCellValueFactory(new PropertyValueFactory<>("clienteNombre"));
         colFecha.setCellValueFactory(new PropertyValueFactory<>("fechaFormateada"));
+        colSubtotal.setCellValueFactory(new PropertyValueFactory<>("subtotal"));
+        colImpuesto.setCellValueFactory(new PropertyValueFactory<>("impuesto"));
         colTotal.setCellValueFactory(new PropertyValueFactory<>("total"));
         colEstado.setCellValueFactory(new PropertyValueFactory<>("estado"));
         tablaFacturas.setItems(listaFacturas);
 
         // Columnas detalle
-        colServicio.setCellValueFactory(new PropertyValueFactory<>("servicioNombre"));
-        colEstilista.setCellValueFactory(new PropertyValueFactory<>("estilistaNombre"));
-        colPrecio.setCellValueFactory(new PropertyValueFactory<>("precio"));
-        colSubtotal.setCellValueFactory(new PropertyValueFactory<>("subtotal"));
+        colDetServicio.setCellValueFactory(new PropertyValueFactory<>("servicioNombre"));
+        colDetEstilista.setCellValueFactory(new PropertyValueFactory<>("estilistaNombre"));
+        colDetPrecio.setCellValueFactory(new PropertyValueFactory<>("precio"));
+        colDetSubtotal.setCellValueFactory(new PropertyValueFactory<>("subtotal"));
         tablaDetalle.setItems(listaDetalle);
 
-        // Metodos de pago
-        cmbMetodoPago.setItems(FXCollections.observableArrayList(
-            "EFECTIVO", "TARJETA", "TRANSFERENCIA", "PAYPHONE"
-        ));
+        // Filtro de estado
+        cmbFiltroEstado.setItems(FXCollections.observableArrayList("Todos", "PENDIENTE", "PAGADA"));
 
         // Al seleccionar factura, mostrar detalle
         tablaFacturas.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal != null) {
-                facturaSeleccionada = newVal;
-                lblFacturaInfo.setText("Factura #" + newVal.getId() + " - " + newVal.getClienteNombre());
-                lblTotalPagar.setText("$" + newVal.getTotal().toString());
-                // Cargar detalle
                 listaDetalle.clear();
                 List<FacturaDetalle> detalles = FacturaDetalleDAO.obtenerPorFactura(newVal.getId());
                 listaDetalle.addAll(detalles);
             }
         });
 
-        cargarFacturasPendientes();
+        cargarFacturas();
     }
 
-    private void cargarFacturasPendientes() {
+    private void cargarFacturas() {
         listaFacturas.clear();
         listaDetalle.clear();
-        facturaSeleccionada = null;
-        lblFacturaInfo.setText("Seleccione una factura");
-        lblTotalPagar.setText("$0.00");
-
-        List<Factura> pendientes = FacturaDAO.obtenerPendientes();
-        listaFacturas.addAll(pendientes);
+        List<Factura> todas = FacturaDAO.obtenerTodas();
+        listaFacturas.addAll(todas);
     }
 
     @FXML
-    private void confirmarPago() {
-        if (facturaSeleccionada == null) {
-            mostrarMensaje("Seleccione una factura pendiente", true);
-            return;
-        }
-        if (cmbMetodoPago.getValue() == null) {
-            mostrarMensaje("Seleccione un metodo de pago", true);
-            return;
-        }
+    private void filtrar() {
+        String filtro = cmbFiltroEstado.getValue();
+        listaFacturas.clear();
+        listaDetalle.clear();
 
-        // Registrar pago
-        boolean pagoOk = PagoDAO.crear(
-            facturaSeleccionada.getId(),
-            cmbMetodoPago.getValue(),
-            facturaSeleccionada.getTotal()
-        );
-
-        if (!pagoOk) {
-            mostrarMensaje("Error al registrar pago", true);
-            return;
-        }
-
-        // Marcar factura como pagada
-        boolean facturaOk = FacturaDAO.marcarPagada(facturaSeleccionada.getId());
-
-        if (facturaOk) {
-            mostrarMensaje("Pago registrado! Factura #" + facturaSeleccionada.getId() + " PAGADA", false);
-            cmbMetodoPago.setValue(null);
-            cargarFacturasPendientes();
+        if (filtro == null || filtro.equals("Todos")) {
+            listaFacturas.addAll(FacturaDAO.obtenerTodas());
+        } else if (filtro.equals("PENDIENTE")) {
+            listaFacturas.addAll(FacturaDAO.obtenerPendientes());
         } else {
-            mostrarMensaje("Error al actualizar factura", true);
+            // PAGADA - filtrar de todas
+            for (Factura f : FacturaDAO.obtenerTodas()) {
+                if ("PAGADA".equals(f.getEstado())) {
+                    listaFacturas.add(f);
+                }
+            }
         }
+        mostrarMensaje("Mostrando: " + (filtro != null ? filtro : "Todos"), false);
     }
 
     @FXML
     private void refrescar() {
-        cargarFacturasPendientes();
+        cargarFacturas();
+        cmbFiltroEstado.setValue(null);
         mostrarMensaje("Datos actualizados", false);
     }
 
@@ -167,10 +141,10 @@ public class PagosController implements Initializable {
     @FXML private void irCaja() {
         cargarVista("/peluqueria/Vistas/Caja.fxml", "Sistema Peluqueria - Caja");
     }
-    @FXML private void irPagos() { }
-    @FXML private void irFacturacion() {
-        cargarVista("/peluqueria/Vistas/Facturacion.fxml", "Sistema Peluqueria - Facturacion");
+    @FXML private void irPagos() {
+        cargarVista("/peluqueria/Vistas/PagosFactura.fxml", "Sistema Peluqueria - Pagos");
     }
+    @FXML private void irFacturacion() { }
     @FXML private void cerrarSesion() {
         cargarVista("/peluqueria/Vistas/Login.fxml", "Sistema Peluqueria - Login");
     }

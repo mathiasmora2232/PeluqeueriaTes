@@ -82,7 +82,7 @@ public class CitaDAO {
     public static List<String[]> obtenerTodas() {
         List<String[]> citas = new ArrayList<>();
         String query = "SELECT c.id, cl.nombre AS cliente, s.nombre AS servicio, " +
-                       "c.fecha, c.hora, c.estado " +
+                       "c.fecha, c.hora, c.estado, c.observaciones " +
                        "FROM citas c " +
                        "JOIN clientes cl ON c.cliente_id = cl.id " +
                        "JOIN servicios s ON c.servicio_id = s.id " +
@@ -91,13 +91,15 @@ public class CitaDAO {
              PreparedStatement ps = conn.prepareStatement(query)) {
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                String[] fila = new String[6];
+                String[] fila = new String[7];
                 fila[0] = String.valueOf(rs.getInt("id"));
                 fila[1] = rs.getString("cliente");
                 fila[2] = rs.getString("servicio");
                 fila[3] = rs.getDate("fecha").toLocalDate().toString();
                 fila[4] = rs.getTime("hora").toLocalTime().toString();
                 fila[5] = rs.getString("estado");
+                String obs = rs.getString("observaciones");
+                fila[6] = (obs != null && obs.startsWith("Estilista: ")) ? obs.substring(11) : (obs != null ? obs : "");
                 citas.add(fila);
             }
             rs.close();
@@ -105,5 +107,20 @@ public class CitaDAO {
             System.err.println("Error al obtener citas: " + e.getMessage());
         }
         return citas;
+    }
+
+    // Actualizar estado de una cita
+    public static boolean actualizarEstado(int citaId, String nuevoEstado) {
+        String query = "UPDATE citas SET estado = ? WHERE id = ?";
+        try (Connection conn = Conexion.getConexion();
+             PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setString(1, nuevoEstado);
+            ps.setInt(2, citaId);
+            ps.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            System.err.println("Error al actualizar estado cita: " + e.getMessage());
+            return false;
+        }
     }
 }

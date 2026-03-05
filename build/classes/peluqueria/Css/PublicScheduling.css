@@ -43,7 +43,6 @@
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 8, 0, 0, 2);
 }
 
-/* Títulos de secciones */
 .section-title {
     -fx-font-size: 14px;
     -fx-font-weight: bold;
@@ -55,14 +54,14 @@
     -fx-padding: 0;
 }
 
-/* Labels */
+
 .label-form {
     -fx-font-size: 12px;
     -fx-text-fill: #333;
     -fx-font-weight: 500;
 }
 
-/* TextFields */
+
 .text-field {
     -fx-padding: 12;
     -fx-font-size: 11px;
@@ -85,7 +84,6 @@
     -fx-border-color: #bdc3c7;
 }
 
-/* ComboBox */
 .combo-box {
     -fx-padding: 10;
     -fx-font-size: 11px;
@@ -120,7 +118,7 @@
     -fx-background-color: #27ae60;
 }
 
-/* DatePicker */
+
 .date-picker {
     -fx-padding: 10;
     -fx-font-size: 11px;
@@ -203,7 +201,6 @@
     -fx-border-width: 1;
 }
 
-/* Transiciones suaves */
 * {
     -fx-font-smoothing-type: lcd;
 }

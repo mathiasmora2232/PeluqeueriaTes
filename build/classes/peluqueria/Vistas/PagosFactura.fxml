@@ -31,6 +31,7 @@
         <Button text="Usuarios" styleClass="sidebar-btn" onAction="#irUsuarios" maxWidth="Infinity"/>
         <Button text="Caja" styleClass="sidebar-btn" onAction="#irCaja" maxWidth="Infinity"/>
         <Button text="Pagos" styleClass="sidebar-btn-active" onAction="#irPagos" maxWidth="Infinity"/>
+        <Button text="Facturacion" styleClass="sidebar-btn" onAction="#irFacturacion" maxWidth="Infinity"/>
         <Region VBox.vgrow="ALWAYS"/>
         <Button text="Cerrar Sesion" styleClass="sidebar-btn-logout" onAction="#cerrarSesion" maxWidth="Infinity"/>
     </VBox>
@@ -83,7 +84,7 @@
 
                 <VBox spacing="5">
                     <Label text="Total a Pagar" styleClass="label-form"/>
-                    <Label fx:id="lblTotalPagar" text="$0.00" style="-fx-font-weight: bold; -fx-font-size: 18px; -fx-text-fill: #7C3AED;"/>
+                    <Label fx:id="lblTotalPagar" text="0.00" style="-fx-font-weight: bold; -fx-font-size: 18px; -fx-text-fill: #7C3AED;"/>
                 </VBox>
 
                 <VBox spacing="5" HBox.hgrow="ALWAYS">

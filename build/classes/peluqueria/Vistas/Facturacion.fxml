@@ -13,7 +13,7 @@
 <HBox prefHeight="700.0" prefWidth="1000.0"
       stylesheets="@/peluqueria/Css/clientes.css"
       xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="peluqueria.Controllers.PagosController">
+      fx:controller="peluqueria.Controllers.FacturacionController">
 
     <!-- SIDEBAR -->
     <VBox prefWidth="200" styleClass="sidebar" spacing="5">
@@ -30,8 +30,8 @@
         <Button text="Estilistas" styleClass="sidebar-btn" onAction="#irEstilistas" maxWidth="Infinity"/>
         <Button text="Usuarios" styleClass="sidebar-btn" onAction="#irUsuarios" maxWidth="Infinity"/>
         <Button text="Caja" styleClass="sidebar-btn" onAction="#irCaja" maxWidth="Infinity"/>
-        <Button text="Pagos" styleClass="sidebar-btn-active" onAction="#irPagos" maxWidth="Infinity"/>
-        <Button text="Facturacion" styleClass="sidebar-btn" onAction="#irFacturacion" maxWidth="Infinity"/>
+        <Button text="Pagos" styleClass="sidebar-btn" onAction="#irPagos" maxWidth="Infinity"/>
+        <Button text="Facturacion" styleClass="sidebar-btn-active" onAction="#irFacturacion" maxWidth="Infinity"/>
         <Region VBox.vgrow="ALWAYS"/>
         <Button text="Cerrar Sesion" styleClass="sidebar-btn-logout" onAction="#cerrarSesion" maxWidth="Infinity"/>
     </VBox>
@@ -42,64 +42,43 @@
             <Insets top="25" right="25" bottom="25" left="25"/>
         </padding>
 
-        <Label text="Pagos - Facturas Pendientes" styleClass="titulo"/>
-        <Label text="Seleccione una factura pendiente para registrar el pago" styleClass="fecha"/>
+        <Label text="Facturacion - Todas las Facturas" styleClass="titulo"/>
+        <Label text="Consulte el historial completo de facturas" styleClass="fecha"/>
 
-        <!-- TABLA FACTURAS PENDIENTES -->
+        <!-- FILTRO Y REFRESCAR -->
         <HBox spacing="10" alignment="CENTER_LEFT">
-            <Label text="Facturas Pendientes" styleClass="subtitulo"/>
+            <Label text="Filtrar por estado:" styleClass="label-form"/>
+            <ComboBox fx:id="cmbFiltroEstado" promptText="Todos" styleClass="campo-texto" prefWidth="160"/>
+            <Button text="Filtrar" styleClass="btn-accion" onAction="#filtrar"/>
             <Region HBox.hgrow="ALWAYS"/>
             <Button text="Refrescar" styleClass="btn-secundario" onAction="#refrescar"/>
         </HBox>
 
-        <TableView fx:id="tablaFacturas" styleClass="tabla-citas" prefHeight="200">
+        <!-- TABLA FACTURAS -->
+        <TableView fx:id="tablaFacturas" styleClass="tabla-citas" VBox.vgrow="ALWAYS">
             <columns>
                 <TableColumn fx:id="colId" text="#" prefWidth="50"/>
                 <TableColumn fx:id="colCliente" text="Cliente" prefWidth="180"/>
-                <TableColumn fx:id="colFecha" text="Fecha" prefWidth="150"/>
+                <TableColumn fx:id="colFecha" text="Fecha" prefWidth="160"/>
+                <TableColumn fx:id="colSubtotal" text="Subtotal" prefWidth="100"/>
+                <TableColumn fx:id="colImpuesto" text="IVA" prefWidth="80"/>
                 <TableColumn fx:id="colTotal" text="Total" prefWidth="100"/>
                 <TableColumn fx:id="colEstado" text="Estado" prefWidth="100"/>
             </columns>
         </TableView>
 
-        <!-- DETALLE DE FACTURA SELECCIONADA -->
-        <Label text="Detalle de Factura" styleClass="subtitulo"/>
+        <!-- DETALLE -->
+        <Label text="Detalle de Factura Seleccionada" styleClass="subtitulo"/>
 
         <TableView fx:id="tablaDetalle" styleClass="tabla-citas" prefHeight="150">
             <columns>
-                <TableColumn fx:id="colServicio" text="Servicio" prefWidth="200"/>
-                <TableColumn fx:id="colEstilista" text="Estilista" prefWidth="150"/>
-                <TableColumn fx:id="colPrecio" text="Precio" prefWidth="100"/>
-                <TableColumn fx:id="colSubtotal" text="Subtotal" prefWidth="100"/>
+                <TableColumn fx:id="colDetServicio" text="Servicio" prefWidth="200"/>
+                <TableColumn fx:id="colDetEstilista" text="Estilista" prefWidth="150"/>
+                <TableColumn fx:id="colDetPrecio" text="Precio" prefWidth="100"/>
+                <TableColumn fx:id="colDetSubtotal" text="Subtotal" prefWidth="100"/>
             </columns>
         </TableView>
 
-        <!-- PAGO -->
-        <VBox styleClass="card" spacing="12">
-            <HBox spacing="20" alignment="CENTER_LEFT">
-                <VBox spacing="5">
-                    <Label text="Factura" styleClass="label-form"/>
-                    <Label fx:id="lblFacturaInfo" text="Seleccione una factura" style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
-                </VBox>
-
-                <VBox spacing="5">
-                    <Label text="Total a Pagar" styleClass="label-form"/>
-                    <Label fx:id="lblTotalPagar" text="0.00" style="-fx-font-weight: bold; -fx-font-size: 18px; -fx-text-fill: #7C3AED;"/>
-                </VBox>
-
-                <VBox spacing="5" HBox.hgrow="ALWAYS">
-                    <Label text="Metodo de Pago" styleClass="label-form"/>
-                    <ComboBox fx:id="cmbMetodoPago" promptText="Seleccione metodo" maxWidth="Infinity" styleClass="campo-texto"/>
-                </VBox>
-
-                <VBox spacing="5">
-                    <Label text=" " styleClass="label-form"/>
-                    <Button text="CONFIRMAR PAGO" styleClass="btn-accion" onAction="#confirmarPago"
-                            style="-fx-font-size: 14px; -fx-padding: 10 25;"/>
-                </VBox>
-            </HBox>
-
-            <Label fx:id="lblMensaje" styleClass="mensaje"/>
-        </VBox>
+        <Label fx:id="lblMensaje" styleClass="mensaje"/>
     </VBox>
 </HBox>

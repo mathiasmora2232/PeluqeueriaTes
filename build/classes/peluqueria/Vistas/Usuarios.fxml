@@ -34,6 +34,7 @@
         <Button text="Usuarios" styleClass="sidebar-btn-active" onAction="#irUsuarios" maxWidth="Infinity"/>
         <Button text="Caja" styleClass="sidebar-btn" onAction="#irCaja" maxWidth="Infinity"/>
         <Button text="Pagos" styleClass="sidebar-btn" onAction="#irPagos" maxWidth="Infinity"/>
+        <Button text="Facturacion" styleClass="sidebar-btn" onAction="#irFacturacion" maxWidth="Infinity"/>
         <Region VBox.vgrow="ALWAYS"/>
         <Button text="Cerrar Sesion" styleClass="sidebar-btn-logout" onAction="#cerrarSesion" maxWidth="Infinity"/>
     </VBox>
@@ -79,7 +80,8 @@
                 <Region HBox.hgrow="ALWAYS"/>
                 <Button text="Limpiar" styleClass="btn-secundario" onAction="#limpiarFormulario"/>
                 <Button text="Eliminar" styleClass="btn-secundario" onAction="#eliminarUsuario"/>
-                <Button text="Editar" styleClass="btn-secundario" onAction="#editarUsuario"/>
+                <Button text="Editar Contrasena" styleClass="btn-secundario" onAction="#habilitarEdicionPassword"/>
+                <Button text="Guardar Cambios" styleClass="btn-secundario" onAction="#editarUsuario"/>
                 <Button text="Guardar Nuevo" styleClass="btn-accion" onAction="#guardarUsuario"/>
             </HBox>
         </VBox>
@@ -93,8 +95,9 @@
 
         <TableView fx:id="tablaUsuarios" styleClass="tabla-citas" VBox.vgrow="ALWAYS">
             <columns>
-                <TableColumn fx:id="colUsername" text="Username" prefWidth="300"/>
-                <TableColumn fx:id="colRol" text="Rol" prefWidth="300"/>
+                <TableColumn fx:id="colUsername" text="Username" prefWidth="200"/>
+                <TableColumn fx:id="colPassword" text="Password" prefWidth="200"/>
+                <TableColumn fx:id="colRol" text="Rol" prefWidth="200"/>
             </columns>
         </TableView>
     </VBox>

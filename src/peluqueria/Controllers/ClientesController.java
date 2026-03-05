@@ -1,6 +1,7 @@
 package peluqueria.Controllers;
 
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -16,6 +17,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
+import peluqueria.Database.ClienteDAO;
 
 public class ClientesController implements Initializable {
 
@@ -36,21 +38,19 @@ public class ClientesController implements Initializable {
 
     private ObservableList<Cliente> listaClientes = FXCollections.observableArrayList();
     private FilteredList<Cliente> listaFiltrada;
+    private Cliente clienteSeleccionado = null;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // Configurar columnas de la tabla
         colNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
         colTelefono.setCellValueFactory(new PropertyValueFactory<>("telefono"));
         colEmail.setCellValueFactory(new PropertyValueFactory<>("email"));
         colDireccion.setCellValueFactory(new PropertyValueFactory<>("direccion"));
         colNotas.setCellValueFactory(new PropertyValueFactory<>("notas"));
 
-        // Configurar lista filtrada para busqueda
         listaFiltrada = new FilteredList<>(listaClientes, p -> true);
         tablaClientes.setItems(listaFiltrada);
 
-        // Filtrar al escribir en el campo de busqueda
         txtBuscar.textProperty().addListener((observable, oldValue, newValue) -> {
             listaFiltrada.setPredicate(cliente -> {
                 if (newValue == null || newValue.isEmpty()) {
@@ -62,6 +62,31 @@ public class ClientesController implements Initializable {
                     || cliente.getEmail().toLowerCase().contains(filtro);
             });
         });
+
+        // Al seleccionar un cliente, cargar datos en el formulario
+        tablaClientes.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null) {
+                clienteSeleccionado = newVal;
+                txtNombre.setText(newVal.getNombre());
+                txtTelefono.setText(newVal.getTelefono());
+                txtEmail.setText(newVal.getEmail());
+                txtDireccion.setText(newVal.getDireccion());
+                txtNotas.setText(newVal.getNotas());
+            }
+        });
+
+        cargarClientesDesdeDB();
+    }
+
+    private void cargarClientesDesdeDB() {
+        listaClientes.clear();
+        List<String[]> clientesDB = ClienteDAO.obtenerTodos();
+        for (String[] fila : clientesDB) {
+            listaClientes.add(new Cliente(
+                Integer.parseInt(fila[0]),
+                fila[1], fila[2], fila[3], fila[4], fila[5]
+            ));
+        }
     }
 
     @FXML
@@ -95,17 +120,32 @@ public class ClientesController implements Initializable {
             return;
         }
 
-        Cliente nuevo = new Cliente(
-            nombre,
-            telefono,
-            email,
-            txtDireccion.getText().trim(),
-            txtNotas.getText().trim()
-        );
+        if (clienteSeleccionado != null) {
+            // Actualizar
+            boolean ok = ClienteDAO.actualizar(
+                clienteSeleccionado.getId(), nombre, telefono, email,
+                txtDireccion.getText().trim(), txtNotas.getText().trim()
+            );
+            if (ok) {
+                mostrarMensaje("Cliente actualizado exitosamente!", false);
+            } else {
+                mostrarMensaje("Error al actualizar cliente", true);
+            }
+        } else {
+            // Crear nuevo
+            boolean ok = ClienteDAO.crear(
+                nombre, telefono, email,
+                txtDireccion.getText().trim(), txtNotas.getText().trim()
+            );
+            if (ok) {
+                mostrarMensaje("Cliente guardado exitosamente!", false);
+            } else {
+                mostrarMensaje("Error al guardar cliente", true);
+            }
+        }
 
-        listaClientes.add(nuevo);
-        mostrarMensaje("Cliente guardado exitosamente!", false);
         limpiarFormulario();
+        cargarClientesDesdeDB();
     }
 
     @FXML
@@ -116,6 +156,8 @@ public class ClientesController implements Initializable {
         txtDireccion.clear();
         txtNotas.clear();
         lblMensaje.setText("");
+        clienteSeleccionado = null;
+        tablaClientes.getSelectionModel().clearSelection();
     }
 
     private void mostrarMensaje(String mensaje, boolean esError) {
@@ -154,6 +196,9 @@ public class ClientesController implements Initializable {
     @FXML private void irPagos() {
         cargarVista("/peluqueria/Vistas/PagosFactura.fxml", "Sistema Peluqueria - Pagos");
     }
+    @FXML private void irFacturacion() {
+        cargarVista("/peluqueria/Vistas/Facturacion.fxml", "Sistema Peluqueria - Facturacion");
+    }
 
     @FXML
     private void cerrarSesion() {
@@ -180,13 +225,15 @@ public class ClientesController implements Initializable {
 
     // Clase interna para representar un cliente en la tabla
     public static class Cliente {
+        private int id;
         private String nombre;
         private String telefono;
         private String email;
         private String direccion;
         private String notas;
 
-        public Cliente(String nombre, String telefono, String email, String direccion, String notas) {
+        public Cliente(int id, String nombre, String telefono, String email, String direccion, String notas) {
+            this.id = id;
             this.nombre = nombre;
             this.telefono = telefono;
             this.email = email;
@@ -194,6 +241,7 @@ public class ClientesController implements Initializable {
             this.notas = notas;
         }
 
+        public int getId() { return id; }
         public String getNombre() { return nombre; }
         public String getTelefono() { return telefono; }
         public String getEmail() { return email; }

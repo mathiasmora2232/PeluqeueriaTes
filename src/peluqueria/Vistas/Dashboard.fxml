@@ -31,6 +31,7 @@
         <Button text="Usuarios" styleClass="sidebar-btn" onAction="#irUsuarios" maxWidth="Infinity"/>
         <Button text="Caja" styleClass="sidebar-btn" onAction="#irCaja" maxWidth="Infinity"/>
         <Button text="Pagos" styleClass="sidebar-btn" onAction="#irPagos" maxWidth="Infinity"/>
+        <Button text="Facturacion" styleClass="sidebar-btn" onAction="#irFacturacion" maxWidth="Infinity"/>
 
         <Region VBox.vgrow="ALWAYS"/>
 
@@ -47,7 +48,7 @@
         <Label fx:id="lblBienvenida" text="Bienvenido, Admin" styleClass="titulo"/>
         <Label fx:id="lblFecha" text="" styleClass="fecha"/>
 
-        <!-- Tarjetas -->
+        <!-- Tarjetas fila 1 -->
         <HBox spacing="15">
             <VBox styleClass="card" HBox.hgrow="ALWAYS">
                 <Label fx:id="lblCitasHoy" text="0" styleClass="card-numero"/>
@@ -60,6 +61,22 @@
             <VBox styleClass="card" HBox.hgrow="ALWAYS">
                 <Label fx:id="lblServicios" text="0" styleClass="card-numero"/>
                 <Label text="Servicios" styleClass="card-texto"/>
+            </VBox>
+        </HBox>
+
+        <!-- Tarjetas fila 2 -->
+        <HBox spacing="15">
+            <VBox styleClass="card" HBox.hgrow="ALWAYS">
+                <Label fx:id="lblEstilistas" text="0" styleClass="card-numero"/>
+                <Label text="Estilistas" styleClass="card-texto"/>
+            </VBox>
+            <VBox styleClass="card" HBox.hgrow="ALWAYS">
+                <Label fx:id="lblFacturasPendientes" text="0" styleClass="card-numero"/>
+                <Label text="Facturas Pendientes" styleClass="card-texto"/>
+            </VBox>
+            <VBox styleClass="card" HBox.hgrow="ALWAYS">
+                <Label fx:id="lblIngresosMes" text="0" styleClass="card-numero"/>
+                <Label text="Ingresos del Mes" styleClass="card-texto"/>
             </VBox>
         </HBox>
 

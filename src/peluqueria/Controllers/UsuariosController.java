@@ -2,6 +2,7 @@ package peluqueria.Controllers;
 
 import java.net.URL;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -11,6 +12,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
@@ -31,18 +34,33 @@ public class UsuariosController implements Initializable {
 
     @FXML private TableView<Usuario> tablaUsuarios;
     @FXML private TableColumn<Usuario, String> colUsername;
+    @FXML private TableColumn<Usuario, String> colPassword;
     @FXML private TableColumn<Usuario, String> colRol;
 
     private ObservableList<Usuario> listaUsuarios = FXCollections.observableArrayList();
     private FilteredList<Usuario> listaFiltrada;
     private Usuario usuarioSeleccionado = null;
+    private boolean editandoPassword = false;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         colUsername.setCellValueFactory(new PropertyValueFactory<>("username"));
+        colPassword.setCellValueFactory(new PropertyValueFactory<>("password"));
+        // Mostrar *** en vez de la contraseña real
+        colPassword.setCellFactory(column -> new javafx.scene.control.TableCell<Usuario, String>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                setText(empty || item == null ? null : "***");
+            }
+        });
         colRol.setCellValueFactory(new PropertyValueFactory<>("rol"));
 
         cmbRol.setItems(FXCollections.observableArrayList("admin", "barbero", "recepcion"));
+
+        // Password bloqueado por defecto
+        txtPassword.setEditable(false);
+        txtPassword.setStyle("-fx-opacity: 0.6;");
 
         listaFiltrada = new FilteredList<>(listaUsuarios, p -> true);
         tablaUsuarios.setItems(listaFiltrada);
@@ -58,7 +76,10 @@ public class UsuariosController implements Initializable {
             if (newVal != null) {
                 usuarioSeleccionado = newVal;
                 txtUsername.setText(newVal.getUsername());
-                txtPassword.setText(newVal.getPassword());
+                txtPassword.setText("***");
+                txtPassword.setEditable(false);
+                txtPassword.setStyle("-fx-opacity: 0.6;");
+                editandoPassword = false;
                 cmbRol.setValue(newVal.getRol());
             }
         });
@@ -118,15 +139,38 @@ public class UsuariosController implements Initializable {
     }
 
     @FXML
+    private void habilitarEdicionPassword() {
+        if (usuarioSeleccionado == null) {
+            mostrarMensaje("Seleccione un usuario primero", true);
+            return;
+        }
+
+        Alert alerta = new Alert(Alert.AlertType.CONFIRMATION);
+        alerta.setTitle("Confirmar edicion");
+        alerta.setHeaderText("Cambiar contrasena");
+        alerta.setContentText("Estas seguro de que quieres cambiar la contrasena de " + usuarioSeleccionado.getUsername() + "?");
+
+        Optional<ButtonType> resultado = alerta.showAndWait();
+        if (resultado.isPresent() && resultado.get() == ButtonType.OK) {
+            editandoPassword = true;
+            txtPassword.setEditable(true);
+            txtPassword.setStyle("");
+            txtPassword.setText("");
+            txtPassword.setPromptText("Ingrese nueva contrasena");
+            txtPassword.requestFocus();
+            mostrarMensaje("Ingrese la nueva contrasena", false);
+        }
+    }
+
+    @FXML
     private void editarUsuario() {
         if (usuarioSeleccionado == null) {
             mostrarMensaje("Seleccione un usuario de la tabla", true);
             return;
         }
         String username = txtUsername.getText().trim();
-        String password = txtPassword.getText().trim();
-        if (username.isEmpty() || password.isEmpty()) {
-            mostrarMensaje("Complete todos los campos", true);
+        if (username.isEmpty()) {
+            mostrarMensaje("Complete el username", true);
             return;
         }
         if (username.contains(" ")) {
@@ -137,14 +181,23 @@ public class UsuariosController implements Initializable {
             mostrarMensaje("El username debe tener al menos 3 caracteres", true);
             return;
         }
-        if (password.length() < 4) {
-            mostrarMensaje("El password debe tener al menos 4 caracteres", true);
-            return;
-        }
 
         usuarioSeleccionado.setUsername(username);
-        usuarioSeleccionado.setPassword(password);
         usuarioSeleccionado.setRol(cmbRol.getValue());
+
+        // Solo actualizar password si se habilito la edicion
+        if (editandoPassword) {
+            String password = txtPassword.getText().trim();
+            if (password.isEmpty()) {
+                mostrarMensaje("Ingrese la nueva contrasena", true);
+                return;
+            }
+            if (password.length() < 4) {
+                mostrarMensaje("El password debe tener al menos 4 caracteres", true);
+                return;
+            }
+            usuarioSeleccionado.setPassword(password);
+        }
 
         if (UsuarioDAO.actualizar(usuarioSeleccionado)) {
             mostrarMensaje("Usuario actualizado!", false);
@@ -175,6 +228,10 @@ public class UsuariosController implements Initializable {
     private void limpiarFormulario() {
         txtUsername.clear();
         txtPassword.clear();
+        txtPassword.setPromptText("Ingrese password");
+        txtPassword.setEditable(true);
+        txtPassword.setStyle("");
+        editandoPassword = false;
         cmbRol.setValue(null);
         lblMensaje.setText("");
         usuarioSeleccionado = null;
@@ -208,6 +265,9 @@ public class UsuariosController implements Initializable {
     }
     @FXML private void irPagos() {
         cargarVista("/peluqueria/Vistas/PagosFactura.fxml", "Sistema Peluqueria - Pagos");
+    }
+    @FXML private void irFacturacion() {
+        cargarVista("/peluqueria/Vistas/Facturacion.fxml", "Sistema Peluqueria - Facturacion");
     }
     @FXML private void cerrarSesion() {
         cargarVista("/peluqueria/Vistas/Login.fxml", "Sistema Peluqueria - Login");

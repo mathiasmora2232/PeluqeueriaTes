@@ -227,6 +227,9 @@ public class ServiciosController implements Initializable {
     @FXML private void irPagos() {
         cargarVista("/peluqueria/Vistas/PagosFactura.fxml", "Sistema Peluqueria - Pagos");
     }
+    @FXML private void irFacturacion() {
+        cargarVista("/peluqueria/Vistas/Facturacion.fxml", "Sistema Peluqueria - Facturacion");
+    }
     @FXML private void cerrarSesion() {
         cargarVista("/peluqueria/Vistas/Login.fxml", "Sistema Peluqueria - Login");
     }

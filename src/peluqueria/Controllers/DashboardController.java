@@ -1,6 +1,10 @@
 package peluqueria.Controllers;
 
+import java.math.BigDecimal;
 import java.net.URL;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
@@ -12,6 +16,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
+import peluqueria.Database.Conexion;
 
 public class DashboardController implements Initializable {
 
@@ -20,6 +25,9 @@ public class DashboardController implements Initializable {
     @FXML private Label lblCitasHoy;
     @FXML private Label lblClientes;
     @FXML private Label lblServicios;
+    @FXML private Label lblEstilistas;
+    @FXML private Label lblFacturasPendientes;
+    @FXML private Label lblIngresosMes;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -32,10 +40,73 @@ public class DashboardController implements Initializable {
         fecha = fecha.substring(0, 1).toUpperCase() + fecha.substring(1);
         lblFecha.setText(fecha);
 
-        // Valores iniciales
-        lblCitasHoy.setText("0");
-        lblClientes.setText("0");
-        lblServicios.setText("0");
+        // Cargar conteos desde la base de datos
+        lblCitasHoy.setText(String.valueOf(contarCitasHoy()));
+        lblClientes.setText(String.valueOf(contarRegistros("clientes")));
+        lblServicios.setText(String.valueOf(contarRegistros("servicios")));
+        lblEstilistas.setText(String.valueOf(contarRegistros("estilistas")));
+        lblFacturasPendientes.setText(String.valueOf(contarFacturasPendientes()));
+        lblIngresosMes.setText("$" + obtenerIngresosMes().toString());
+    }
+
+    private int contarCitasHoy() {
+        String query = "SELECT COUNT(*) FROM citas WHERE fecha = CURRENT_DATE";
+        try (Connection conn = Conexion.getConexion();
+             PreparedStatement ps = conn.prepareStatement(query)) {
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+            rs.close();
+        } catch (Exception e) {
+            System.err.println("Error al contar citas de hoy: " + e.getMessage());
+        }
+        return 0;
+    }
+
+    private int contarRegistros(String tabla) {
+        String query = "SELECT COUNT(*) FROM " + tabla;
+        try (Connection conn = Conexion.getConexion();
+             PreparedStatement ps = conn.prepareStatement(query)) {
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+            rs.close();
+        } catch (Exception e) {
+            System.err.println("Error al contar " + tabla + ": " + e.getMessage());
+        }
+        return 0;
+    }
+
+    private int contarFacturasPendientes() {
+        String query = "SELECT COUNT(*) FROM facturas WHERE estado = 'PENDIENTE'";
+        try (Connection conn = Conexion.getConexion();
+             PreparedStatement ps = conn.prepareStatement(query)) {
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+            rs.close();
+        } catch (Exception e) {
+            System.err.println("Error al contar facturas pendientes: " + e.getMessage());
+        }
+        return 0;
+    }
+
+    private BigDecimal obtenerIngresosMes() {
+        String query = "SELECT COALESCE(SUM(total), 0) FROM facturas WHERE estado = 'PAGADA' AND EXTRACT(MONTH FROM fecha) = EXTRACT(MONTH FROM CURRENT_DATE) AND EXTRACT(YEAR FROM fecha) = EXTRACT(YEAR FROM CURRENT_DATE)";
+        try (Connection conn = Conexion.getConexion();
+             PreparedStatement ps = conn.prepareStatement(query)) {
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getBigDecimal(1);
+            }
+            rs.close();
+        } catch (Exception e) {
+            System.err.println("Error al obtener ingresos del mes: " + e.getMessage());
+        }
+        return BigDecimal.ZERO;
     }
 
     // NAVEGACION
@@ -101,6 +172,9 @@ public class DashboardController implements Initializable {
 
     @FXML private void irPagos() {
         cargarVista("/peluqueria/Vistas/PagosFactura.fxml", "Sistema Peluqueria - Pagos");
+    }
+    @FXML private void irFacturacion() {
+        cargarVista("/peluqueria/Vistas/Facturacion.fxml", "Sistema Peluqueria - Facturacion");
     }
 
     private void cargarVista(String fxml, String titulo) {

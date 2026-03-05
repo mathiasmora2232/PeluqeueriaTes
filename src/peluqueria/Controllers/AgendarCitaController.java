@@ -43,6 +43,8 @@ public class AgendarCitaController implements Initializable {
     @FXML private TableColumn<Cita, String> colHora;
     @FXML private TableColumn<Cita, String> colEstado;
 
+    @FXML private ComboBox<String> cmbEstadoCita;
+
     private ObservableList<Cita> listaCitas = FXCollections.observableArrayList();
 
     @Override
@@ -61,6 +63,9 @@ public class AgendarCitaController implements Initializable {
         colEstado.setCellValueFactory(new PropertyValueFactory<>("estado"));
 
         tablaCitas.setItems(listaCitas);
+
+        // Cargar estados para el ComboBox
+        cmbEstadoCita.setItems(FXCollections.observableArrayList("Agendada", "Completada", "Cancelada"));
 
         // Cargar citas existentes desde la base de datos
         cargarCitasDesdeDB();
@@ -187,13 +192,33 @@ public class AgendarCitaController implements Initializable {
         List<String[]> citasDB = CitaDAO.obtenerTodas();
         for (String[] fila : citasDB) {
             listaCitas.add(new Cita(
+                Integer.parseInt(fila[0]), // id
                 fila[1], // cliente
                 fila[2], // servicio
-                "",      // estilista (guardado en observaciones)
+                fila[6], // estilista (extraido de observaciones)
                 fila[3], // fecha
                 fila[4], // hora
                 fila[5]  // estado
             ));
+        }
+    }
+
+    @FXML
+    private void cambiarEstado() {
+        Cita seleccionada = tablaCitas.getSelectionModel().getSelectedItem();
+        if (seleccionada == null) {
+            mostrarMensaje("Seleccione una cita de la tabla", true);
+            return;
+        }
+        if (cmbEstadoCita.getValue() == null) {
+            mostrarMensaje("Seleccione un estado", true);
+            return;
+        }
+        if (CitaDAO.actualizarEstado(seleccionada.getId(), cmbEstadoCita.getValue())) {
+            mostrarMensaje("Estado actualizado a: " + cmbEstadoCita.getValue(), false);
+            cargarCitasDesdeDB();
+        } else {
+            mostrarMensaje("Error al actualizar estado", true);
         }
     }
 
@@ -245,6 +270,9 @@ public class AgendarCitaController implements Initializable {
     @FXML private void irPagos() {
         cargarVista("/peluqueria/Vistas/PagosFactura.fxml", "Sistema Peluqueria - Pagos");
     }
+    @FXML private void irFacturacion() {
+        cargarVista("/peluqueria/Vistas/Facturacion.fxml", "Sistema Peluqueria - Facturacion");
+    }
 
     @FXML
     private void cerrarSesion() {
@@ -271,6 +299,7 @@ public class AgendarCitaController implements Initializable {
 
     // Clase interna para representar una cita en la tabla
     public static class Cita {
+        private int id;
         private String cliente;
         private String servicio;
         private String estilista;
@@ -278,7 +307,8 @@ public class AgendarCitaController implements Initializable {
         private String hora;
         private String estado;
 
-        public Cita(String cliente, String servicio, String estilista, String fecha, String hora, String estado) {
+        public Cita(int id, String cliente, String servicio, String estilista, String fecha, String hora, String estado) {
+            this.id = id;
             this.cliente = cliente;
             this.servicio = servicio;
             this.estilista = estilista;
@@ -287,6 +317,7 @@ public class AgendarCitaController implements Initializable {
             this.estado = estado;
         }
 
+        public int getId() { return id; }
         public String getCliente() { return cliente; }
         public String getServicio() { return servicio; }
         public String getEstilista() { return estilista; }

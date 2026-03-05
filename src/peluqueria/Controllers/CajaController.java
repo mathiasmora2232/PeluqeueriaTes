@@ -54,7 +54,7 @@ public class CajaController implements Initializable {
     @FXML private Label lblMensaje;
 
     private ObservableList<FacturaDetalle> listaDetalle = FXCollections.observableArrayList();
-    private static final BigDecimal IVA_RATE = new BigDecimal("0.12");
+    private static final BigDecimal IVA_RATE = new BigDecimal("0.15");
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -251,6 +251,9 @@ public class CajaController implements Initializable {
     @FXML private void irCaja() { }
     @FXML private void irPagos() {
         cargarVista("/peluqueria/Vistas/PagosFactura.fxml", "Sistema Peluqueria - Pagos");
+    }
+    @FXML private void irFacturacion() {
+        cargarVista("/peluqueria/Vistas/Facturacion.fxml", "Sistema Peluqueria - Facturacion");
     }
     @FXML private void cerrarSesion() {
         cargarVista("/peluqueria/Vistas/Login.fxml", "Sistema Peluqueria - Login");
