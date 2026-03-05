@@ -74,7 +74,7 @@ public class ServiciosController implements Initializable {
 
     private void cargarServicios() {
         listaServicios.clear();
-        List<Servicio> servicios = ServicioDAO.obtenerTodos();
+        List<Servicio> servicios = ServicioDAO.obtenerTodosGestion();
         listaServicios.addAll(servicios);
     }
 
@@ -180,11 +180,11 @@ public class ServiciosController implements Initializable {
         }
 
         if (ServicioDAO.eliminar(servicioSeleccionado.getId())) {
-            mostrarMensaje("Servicio eliminado!", false);
+            mostrarMensaje("Servicio desactivado!", false);
             limpiarFormulario();
             cargarServicios();
         } else {
-            mostrarMensaje("Error al eliminar servicio", true);
+            mostrarMensaje("Error al desactivar servicio", true);
         }
     }
 

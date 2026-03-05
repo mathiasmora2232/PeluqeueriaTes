@@ -38,7 +38,7 @@ public class UsuarioDAO {
     // Validar usuario por username y password
     public static Usuario validarUsuario(String username, String password) {
         Usuario usuario = null;
-        String query = "SELECT id, username, password, rol FROM usuarios WHERE username = ? AND password = ?";
+        String query = "SELECT id, username, password, rol FROM usuarios WHERE username = ? AND password = ? AND COALESCE(estado, 'Activo') = 'Activo'";
 
         try (Connection conn = Conexion.getConexion();
              PreparedStatement ps = conn.prepareStatement(query)) {
@@ -131,9 +131,9 @@ public class UsuarioDAO {
         }
     }
 
-    // Eliminar usuario
+    // Soft delete - cambiar estado a Inactivo
     public static boolean eliminar(int id) {
-        String query = "DELETE FROM usuarios WHERE id = ?";
+        String query = "UPDATE usuarios SET estado = 'Inactivo' WHERE id = ?";
 
         try (Connection conn = Conexion.getConexion();
              PreparedStatement ps = conn.prepareStatement(query)) {

@@ -97,9 +97,9 @@ public class EstilistasController implements Initializable {
         listaEstilistas.addAll(estilistas);
     }
 
-    // Obtener todos incluyendo inactivos
+    // Obtener todos incluyendo inactivos para gestion
     private List<Estilista> obtenerTodosEstilistas() {
-        return EstilistaDAO.obtenerTodos();
+        return EstilistaDAO.obtenerTodosGestion();
     }
 
     @FXML

@@ -10,14 +10,44 @@ import java.util.List;
 
 public class EstilistaDAO {
 
-    // Obtener todos los estilistas activos
+    // Obtener solo estilistas activos (para combos de citas, agendamiento)
     public static List<Estilista> obtenerTodos() {
+        return obtenerPorEstado("Activo");
+    }
+
+    // Obtener todos los estilistas incluyendo inactivos (para pantalla de gestion)
+    public static List<Estilista> obtenerTodosGestion() {
         List<Estilista> estilistas = new ArrayList<>();
-        String query = "SELECT id_usuario, nombre, telefono, especialidad, experiencia_anios, estado FROM estilistas WHERE estado = 'Activo' ORDER BY nombre";
-        
+        String query = "SELECT id_usuario, nombre, telefono, especialidad, experiencia_anios, estado FROM estilistas ORDER BY nombre";
         try (Connection conn = Conexion.getConexion();
              PreparedStatement ps = conn.prepareStatement(query)) {
-            
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                estilistas.add(new Estilista(
+                    rs.getInt("id_usuario"),
+                    rs.getString("nombre"),
+                    rs.getString("telefono"),
+                    rs.getString("especialidad"),
+                    rs.getInt("experiencia_anios"),
+                    rs.getString("estado")
+                ));
+            }
+            rs.close();
+        } catch (SQLException e) {
+            System.err.println("Error al obtener estilistas: " + e.getMessage());
+        }
+        return estilistas;
+    }
+
+    // Obtener estilistas por estado
+    private static List<Estilista> obtenerPorEstado(String estado) {
+        List<Estilista> estilistas = new ArrayList<>();
+        String query = "SELECT id_usuario, nombre, telefono, especialidad, experiencia_anios, estado FROM estilistas WHERE estado = ? ORDER BY nombre";
+
+        try (Connection conn = Conexion.getConexion();
+             PreparedStatement ps = conn.prepareStatement(query)) {
+
+            ps.setString(1, estado);
             ResultSet rs = ps.executeQuery();
             
             while (rs.next()) {
@@ -114,19 +144,19 @@ public class EstilistaDAO {
         }
     }
 
-    // Eliminar estilista (cambiar estado a Inactivo)
-    public static boolean eliminar(String Estado) {
+    // Soft delete - cambiar estado a Inactivo
+    public static boolean eliminar(int idUsuario) {
         String query = "UPDATE estilistas SET estado = 'Inactivo' WHERE id_usuario = ?";
-        
+
         try (Connection conn = Conexion.getConexion();
              PreparedStatement ps = conn.prepareStatement(query)) {
-            
-            ps.setString(5, Estado);
+
+            ps.setInt(1, idUsuario);
             ps.executeUpdate();
-            System.out.println("Estilista eliminado exitosamente");
+            System.out.println("Estilista desactivado exitosamente");
             return true;
         } catch (SQLException e) {
-            System.err.println("Error al eliminar estilista: " + e.getMessage());
+            System.err.println("Error al desactivar estilista: " + e.getMessage());
             return false;
         }
     }

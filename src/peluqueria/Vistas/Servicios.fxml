@@ -82,7 +82,7 @@
                 <Label fx:id="lblMensaje" styleClass="mensaje"/>
                 <Region HBox.hgrow="ALWAYS"/>
                 <Button text="Limpiar" styleClass="btn-secundario" onAction="#limpiarFormulario"/>
-                <Button text="Eliminar" styleClass="btn-secundario" onAction="#eliminarServicio"/>
+                <Button text="Desactivar" styleClass="btn-secundario" onAction="#eliminarServicio"/>
                 <Button text="Editar" styleClass="btn-secundario" onAction="#editarServicio"/>
                 <Button text="Guardar Nuevo" styleClass="btn-accion" onAction="#guardarServicio"/>
             </HBox>

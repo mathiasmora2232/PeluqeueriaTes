@@ -11,6 +11,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -24,8 +25,7 @@ public class ClientesController implements Initializable {
     @FXML private TextField txtNombre;
     @FXML private TextField txtTelefono;
     @FXML private TextField txtEmail;
-    @FXML private TextField txtDireccion;
-    @FXML private TextField txtNotas;
+    @FXML private ComboBox<String> cmbGenero;
     @FXML private TextField txtBuscar;
     @FXML private Label lblMensaje;
 
@@ -33,8 +33,9 @@ public class ClientesController implements Initializable {
     @FXML private TableColumn<Cliente, String> colNombre;
     @FXML private TableColumn<Cliente, String> colTelefono;
     @FXML private TableColumn<Cliente, String> colEmail;
-    @FXML private TableColumn<Cliente, String> colDireccion;
-    @FXML private TableColumn<Cliente, String> colNotas;
+    @FXML private TableColumn<Cliente, String> colGenero;
+    @FXML private TableColumn<Cliente, String> colFechaRegistro;
+    @FXML private TableColumn<Cliente, String> colEstado;
 
     private ObservableList<Cliente> listaClientes = FXCollections.observableArrayList();
     private FilteredList<Cliente> listaFiltrada;
@@ -45,8 +46,11 @@ public class ClientesController implements Initializable {
         colNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
         colTelefono.setCellValueFactory(new PropertyValueFactory<>("telefono"));
         colEmail.setCellValueFactory(new PropertyValueFactory<>("email"));
-        colDireccion.setCellValueFactory(new PropertyValueFactory<>("direccion"));
-        colNotas.setCellValueFactory(new PropertyValueFactory<>("notas"));
+        colGenero.setCellValueFactory(new PropertyValueFactory<>("genero"));
+        colFechaRegistro.setCellValueFactory(new PropertyValueFactory<>("fechaRegistro"));
+        colEstado.setCellValueFactory(new PropertyValueFactory<>("estado"));
+
+        cmbGenero.setItems(FXCollections.observableArrayList("Masculino", "Femenino", "Otro"));
 
         listaFiltrada = new FilteredList<>(listaClientes, p -> true);
         tablaClientes.setItems(listaFiltrada);
@@ -70,8 +74,7 @@ public class ClientesController implements Initializable {
                 txtNombre.setText(newVal.getNombre());
                 txtTelefono.setText(newVal.getTelefono());
                 txtEmail.setText(newVal.getEmail());
-                txtDireccion.setText(newVal.getDireccion());
-                txtNotas.setText(newVal.getNotas());
+                cmbGenero.setValue(newVal.getGenero().isEmpty() ? null : newVal.getGenero());
             }
         });
 
@@ -84,69 +87,30 @@ public class ClientesController implements Initializable {
         for (String[] fila : clientesDB) {
             listaClientes.add(new Cliente(
                 Integer.parseInt(fila[0]),
-                fila[1], fila[2], fila[3], fila[4], fila[5]
+                fila[1], fila[2], fila[3], fila[4], fila[5], fila[6]
             ));
         }
     }
 
     @FXML
     private void guardarCliente() {
-        String nombre = txtNombre.getText().trim();
-        String telefono = txtTelefono.getText().trim();
-        String email = txtEmail.getText().trim();
+        if (!validarFormulario()) return;
 
-        if (nombre.isEmpty()) {
-            mostrarMensaje("Ingrese el nombre del cliente", true);
-            return;
-        }
-        if (!nombre.matches("[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+")) {
-            mostrarMensaje("El nombre solo debe contener letras", true);
-            return;
-        }
-        if (telefono.isEmpty()) {
-            mostrarMensaje("Ingrese el telefono", true);
-            return;
-        }
-        if (!telefono.matches("[0-9\\-\\+]+")) {
-            mostrarMensaje("El telefono solo debe contener numeros", true);
-            return;
-        }
-        if (telefono.replaceAll("[^0-9]", "").length() < 7) {
-            mostrarMensaje("El telefono debe tener al menos 7 digitos", true);
-            return;
-        }
-        if (!email.isEmpty() && !email.matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,}$")) {
-            mostrarMensaje("Ingrese un email valido (ej: correo@ejemplo.com)", true);
-            return;
-        }
+        String genero = cmbGenero.getValue() != null ? cmbGenero.getValue() : "";
 
-        String resultado;
-        if (clienteSeleccionado != null) {
-            resultado = ClienteDAO.actualizar(
-                clienteSeleccionado.getId(), nombre, telefono, email,
-                txtDireccion.getText().trim(), txtNotas.getText().trim()
-            );
-            if (resultado.equals("ok")) {
-                mostrarMensaje("Cliente actualizado exitosamente!", false);
-            } else if (resultado.equals("email_duplicado")) {
-                mostrarMensaje("Ya existe un cliente con ese email", true);
-                return;
-            } else {
-                mostrarMensaje("Error al actualizar cliente", true);
-            }
+        String resultado = ClienteDAO.crear(
+            txtNombre.getText().trim(),
+            txtTelefono.getText().trim(),
+            txtEmail.getText().trim(),
+            genero
+        );
+        if (resultado.equals("ok")) {
+            mostrarMensaje("Cliente guardado exitosamente!", false);
+        } else if (resultado.equals("email_duplicado")) {
+            mostrarMensaje("Ya existe un cliente con ese email", true);
+            return;
         } else {
-            resultado = ClienteDAO.crear(
-                nombre, telefono, email,
-                txtDireccion.getText().trim(), txtNotas.getText().trim()
-            );
-            if (resultado.equals("ok")) {
-                mostrarMensaje("Cliente guardado exitosamente!", false);
-            } else if (resultado.equals("email_duplicado")) {
-                mostrarMensaje("Ya existe un cliente con ese email", true);
-                return;
-            } else {
-                mostrarMensaje("Error al guardar cliente", true);
-            }
+            mostrarMensaje("Error al guardar cliente", true);
         }
 
         limpiarFormulario();
@@ -154,12 +118,89 @@ public class ClientesController implements Initializable {
     }
 
     @FXML
+    private void editarCliente() {
+        if (clienteSeleccionado == null) {
+            mostrarMensaje("Seleccione un cliente de la tabla", true);
+            return;
+        }
+        if (!validarFormulario()) return;
+
+        String genero = cmbGenero.getValue() != null ? cmbGenero.getValue() : "";
+
+        String resultado = ClienteDAO.actualizar(
+            clienteSeleccionado.getId(),
+            txtNombre.getText().trim(),
+            txtTelefono.getText().trim(),
+            txtEmail.getText().trim(),
+            genero
+        );
+        if (resultado.equals("ok")) {
+            mostrarMensaje("Cliente actualizado exitosamente!", false);
+        } else if (resultado.equals("email_duplicado")) {
+            mostrarMensaje("Ya existe un cliente con ese email", true);
+            return;
+        } else {
+            mostrarMensaje("Error al actualizar cliente", true);
+        }
+
+        limpiarFormulario();
+        cargarClientesDesdeDB();
+    }
+
+    @FXML
+    private void eliminarCliente() {
+        if (clienteSeleccionado == null) {
+            mostrarMensaje("Seleccione un cliente de la tabla", true);
+            return;
+        }
+
+        if (ClienteDAO.eliminar(clienteSeleccionado.getId())) {
+            mostrarMensaje("Cliente desactivado!", false);
+            limpiarFormulario();
+            cargarClientesDesdeDB();
+        } else {
+            mostrarMensaje("Error al desactivar cliente", true);
+        }
+    }
+
+    private boolean validarFormulario() {
+        String nombre = txtNombre.getText().trim();
+        String telefono = txtTelefono.getText().trim();
+        String email = txtEmail.getText().trim();
+
+        if (nombre.isEmpty()) {
+            mostrarMensaje("Ingrese el nombre del cliente", true);
+            return false;
+        }
+        if (!nombre.matches("[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+")) {
+            mostrarMensaje("El nombre solo debe contener letras", true);
+            return false;
+        }
+        if (telefono.isEmpty()) {
+            mostrarMensaje("Ingrese el telefono", true);
+            return false;
+        }
+        if (!telefono.matches("[0-9\\-\\+]+")) {
+            mostrarMensaje("El telefono solo debe contener numeros", true);
+            return false;
+        }
+        if (telefono.replaceAll("[^0-9]", "").length() < 7) {
+            mostrarMensaje("El telefono debe tener al menos 7 digitos", true);
+            return false;
+        }
+        if (!email.isEmpty() && !email.matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,}$")) {
+            mostrarMensaje("Ingrese un email valido (ej: correo@ejemplo.com)", true);
+            return false;
+        }
+        return true;
+    }
+
+    @FXML
     private void limpiarFormulario() {
         txtNombre.clear();
         txtTelefono.clear();
         txtEmail.clear();
-        txtDireccion.clear();
-        txtNotas.clear();
+        cmbGenero.setValue(null);
         lblMensaje.setText("");
         clienteSeleccionado = null;
         tablaClientes.getSelectionModel().clearSelection();
@@ -175,16 +216,12 @@ public class ClientesController implements Initializable {
     }
 
     // NAVEGACION
-    @FXML
-    private void irDashboard() {
+    @FXML private void irDashboard() {
         cargarVista("/peluqueria/Vistas/Dashboard.fxml", "Sistema Peluqueria - Dashboard");
     }
-
-    @FXML
-    private void irCitas() {
+    @FXML private void irCitas() {
         cargarVista("/peluqueria/Vistas/AgendarCita.fxml", "Sistema Peluqueria - Agendar Cita");
     }
-
     @FXML private void irClientes() { }
     @FXML private void irServicios() {
         cargarVista("/peluqueria/Vistas/Servicios.fxml", "Sistema Peluqueria - Servicios");
@@ -204,9 +241,7 @@ public class ClientesController implements Initializable {
     @FXML private void irFacturacion() {
         cargarVista("/peluqueria/Vistas/Facturacion.fxml", "Sistema Peluqueria - Facturacion");
     }
-
-    @FXML
-    private void cerrarSesion() {
+    @FXML private void cerrarSesion() {
         cargarVista("/peluqueria/Vistas/Login.fxml", "Sistema Peluqueria - Login");
     }
 
@@ -234,23 +269,26 @@ public class ClientesController implements Initializable {
         private String nombre;
         private String telefono;
         private String email;
-        private String direccion;
-        private String notas;
+        private String genero;
+        private String fechaRegistro;
+        private String estado;
 
-        public Cliente(int id, String nombre, String telefono, String email, String direccion, String notas) {
+        public Cliente(int id, String nombre, String telefono, String email, String genero, String fechaRegistro, String estado) {
             this.id = id;
             this.nombre = nombre;
             this.telefono = telefono;
             this.email = email;
-            this.direccion = direccion;
-            this.notas = notas;
+            this.genero = genero;
+            this.fechaRegistro = fechaRegistro;
+            this.estado = estado;
         }
 
         public int getId() { return id; }
         public String getNombre() { return nombre; }
         public String getTelefono() { return telefono; }
         public String getEmail() { return email; }
-        public String getDireccion() { return direccion; }
-        public String getNotas() { return notas; }
+        public String getGenero() { return genero; }
+        public String getFechaRegistro() { return fechaRegistro; }
+        public String getEstado() { return estado; }
     }
 }

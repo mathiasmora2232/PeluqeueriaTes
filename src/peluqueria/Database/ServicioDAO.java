@@ -11,10 +11,10 @@ import java.util.List;
 
 public class ServicioDAO {
 
-    // Obtener todos los servicios
+    // Obtener todos los servicios activos (para combos, caja, etc.)
     public static List<Servicio> obtenerTodos() {
         List<Servicio> servicios = new ArrayList<>();
-        String query = "SELECT id, nombre, precio, duracion_min, descripcion FROM servicios ORDER BY nombre";
+        String query = "SELECT id, nombre, precio, duracion_min, descripcion FROM servicios WHERE COALESCE(estado, 'Activo') = 'Activo' ORDER BY nombre";
         
         try (Connection conn = Conexion.getConexion();
              PreparedStatement ps = conn.prepareStatement(query)) {
@@ -36,6 +36,33 @@ public class ServicioDAO {
             System.err.println("Error al obtener servicios: " + e.getMessage());
         }
         
+        return servicios;
+    }
+
+    // Obtener todos los servicios incluyendo inactivos (para gestion)
+    public static List<Servicio> obtenerTodosGestion() {
+        List<Servicio> servicios = new ArrayList<>();
+        String query = "SELECT id, nombre, precio, duracion_min, descripcion FROM servicios ORDER BY nombre";
+
+        try (Connection conn = Conexion.getConexion();
+             PreparedStatement ps = conn.prepareStatement(query)) {
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                servicios.add(new Servicio(
+                    rs.getInt("id"),
+                    rs.getString("nombre"),
+                    rs.getBigDecimal("precio"),
+                    rs.getInt("duracion_min"),
+                    rs.getString("descripcion")
+                ));
+            }
+            rs.close();
+        } catch (SQLException e) {
+            System.err.println("Error al obtener servicios: " + e.getMessage());
+        }
+
         return servicios;
     }
 
@@ -110,9 +137,9 @@ public class ServicioDAO {
         }
     }
 
-    // Eliminar servicio
+    // Soft delete - cambiar estado a Inactivo
     public static boolean eliminar(int id) {
-        String query = "DELETE FROM servicios WHERE id = ?";
+        String query = "UPDATE servicios SET estado = 'Inactivo' WHERE id = ?";
         
         try (Connection conn = Conexion.getConexion();
              PreparedStatement ps = conn.prepareStatement(query)) {

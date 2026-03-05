@@ -9,22 +9,26 @@ import java.util.List;
 
 public class ClienteDAO {
 
+    // Obtener todos los clientes (para gestion - incluye inactivos)
     public static List<String[]> obtenerTodos() {
         List<String[]> clientes = new ArrayList<>();
         String query = "SELECT id, nombre, telefono, COALESCE(email, '') AS email, " +
-                       "COALESCE(direccion, '') AS direccion, COALESCE(notas, '') AS notas " +
+                       "COALESCE(genero, '') AS genero, " +
+                       "COALESCE(TO_CHAR(fecha_registro, 'DD/MM/YYYY'), '') AS fecha_registro, " +
+                       "COALESCE(estado, 'Activo') AS estado " +
                        "FROM clientes ORDER BY nombre";
         try (Connection conn = Conexion.getConexion();
              PreparedStatement ps = conn.prepareStatement(query)) {
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                String[] fila = new String[6];
+                String[] fila = new String[7];
                 fila[0] = String.valueOf(rs.getInt("id"));
                 fila[1] = rs.getString("nombre");
                 fila[2] = rs.getString("telefono");
                 fila[3] = rs.getString("email");
-                fila[4] = rs.getString("direccion");
-                fila[5] = rs.getString("notas");
+                fila[4] = rs.getString("genero");
+                fila[5] = rs.getString("fecha_registro");
+                fila[6] = rs.getString("estado");
                 clientes.add(fila);
             }
             rs.close();
@@ -34,16 +38,38 @@ public class ClienteDAO {
         return clientes;
     }
 
+    // Obtener solo clientes activos (para combos de citas, facturas, etc.)
+    public static List<String[]> obtenerActivos() {
+        List<String[]> clientes = new ArrayList<>();
+        String query = "SELECT id, nombre, telefono, COALESCE(email, '') AS email " +
+                       "FROM clientes WHERE estado = 'Activo' ORDER BY nombre";
+        try (Connection conn = Conexion.getConexion();
+             PreparedStatement ps = conn.prepareStatement(query)) {
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                String[] fila = new String[4];
+                fila[0] = String.valueOf(rs.getInt("id"));
+                fila[1] = rs.getString("nombre");
+                fila[2] = rs.getString("telefono");
+                fila[3] = rs.getString("email");
+                clientes.add(fila);
+            }
+            rs.close();
+        } catch (SQLException e) {
+            System.err.println("Error al obtener clientes activos: " + e.getMessage());
+        }
+        return clientes;
+    }
+
     // Retorna: "ok", "email_duplicado", o "error"
-    public static String crear(String nombre, String telefono, String email, String direccion, String notas) {
-        String query = "INSERT INTO clientes (nombre, telefono, email, direccion, notas) VALUES (?, ?, ?, ?, ?)";
+    public static String crear(String nombre, String telefono, String email, String genero) {
+        String query = "INSERT INTO clientes (nombre, telefono, email, genero) VALUES (?, ?, ?, ?)";
         try (Connection conn = Conexion.getConexion();
              PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setString(1, nombre);
             ps.setString(2, telefono);
             ps.setString(3, email.isEmpty() ? null : email);
-            ps.setString(4, direccion);
-            ps.setString(5, notas);
+            ps.setString(4, genero.isEmpty() ? null : genero);
             ps.executeUpdate();
             return "ok";
         } catch (SQLException e) {
@@ -56,16 +82,15 @@ public class ClienteDAO {
     }
 
     // Retorna: "ok", "email_duplicado", o "error"
-    public static String actualizar(int id, String nombre, String telefono, String email, String direccion, String notas) {
-        String query = "UPDATE clientes SET nombre = ?, telefono = ?, email = ?, direccion = ?, notas = ? WHERE id = ?";
+    public static String actualizar(int id, String nombre, String telefono, String email, String genero) {
+        String query = "UPDATE clientes SET nombre = ?, telefono = ?, email = ?, genero = ? WHERE id = ?";
         try (Connection conn = Conexion.getConexion();
              PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setString(1, nombre);
             ps.setString(2, telefono);
             ps.setString(3, email.isEmpty() ? null : email);
-            ps.setString(4, direccion);
-            ps.setString(5, notas);
-            ps.setInt(6, id);
+            ps.setString(4, genero.isEmpty() ? null : genero);
+            ps.setInt(5, id);
             ps.executeUpdate();
             return "ok";
         } catch (SQLException e) {
@@ -77,15 +102,16 @@ public class ClienteDAO {
         }
     }
 
+    // Soft delete - cambiar estado a Inactivo
     public static boolean eliminar(int id) {
-        String query = "DELETE FROM clientes WHERE id = ?";
+        String query = "UPDATE clientes SET estado = 'Inactivo' WHERE id = ?";
         try (Connection conn = Conexion.getConexion();
              PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setInt(1, id);
             ps.executeUpdate();
             return true;
         } catch (SQLException e) {
-            System.err.println("Error al eliminar cliente: " + e.getMessage());
+            System.err.println("Error al desactivar cliente: " + e.getMessage());
             return false;
         }
     }

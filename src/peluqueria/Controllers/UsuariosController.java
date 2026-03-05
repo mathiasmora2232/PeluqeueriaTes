@@ -46,7 +46,7 @@ public class UsuariosController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         colUsername.setCellValueFactory(new PropertyValueFactory<>("username"));
         colPassword.setCellValueFactory(new PropertyValueFactory<>("password"));
-        // Mostrar *** en vez de la contraseña real
+        // Mostrar *** en vez de la contrasena real
         colPassword.setCellFactory(column -> new javafx.scene.control.TableCell<Usuario, String>() {
             @Override
             protected void updateItem(String item, boolean empty) {
@@ -58,9 +58,8 @@ public class UsuariosController implements Initializable {
 
         cmbRol.setItems(FXCollections.observableArrayList("admin", "barbero", "recepcion"));
 
-        // Password bloqueado por defecto
-        txtPassword.setEditable(false);
-        txtPassword.setStyle("-fx-opacity: 0.6;");
+        // Password desbloqueado por defecto (modo creacion)
+        // Se bloquea solo al seleccionar un usuario de la tabla
 
         listaFiltrada = new FilteredList<>(listaUsuarios, p -> true);
         tablaUsuarios.setItems(listaFiltrada);
@@ -72,6 +71,7 @@ public class UsuariosController implements Initializable {
             });
         });
 
+        // Al seleccionar un usuario: bloquear password y mostrar ***
         tablaUsuarios.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal != null) {
                 usuarioSeleccionado = newVal;
@@ -95,6 +95,12 @@ public class UsuariosController implements Initializable {
 
     @FXML
     private void guardarUsuario() {
+        // Guardar nuevo solo funciona sin seleccion
+        if (usuarioSeleccionado != null) {
+            mostrarMensaje("Limpie el formulario primero para crear un nuevo usuario", true);
+            return;
+        }
+
         String username = txtUsername.getText().trim();
         String password = txtPassword.getText().trim();
 
@@ -123,11 +129,7 @@ public class UsuariosController implements Initializable {
             return;
         }
 
-        Usuario nuevo = new Usuario(
-            txtUsername.getText().trim(),
-            txtPassword.getText().trim(),
-            cmbRol.getValue()
-        );
+        Usuario nuevo = new Usuario(username, password, cmbRol.getValue());
 
         if (UsuarioDAO.crearUsuario(nuevo)) {
             mostrarMensaje("Usuario creado exitosamente!", false);
@@ -181,6 +183,10 @@ public class UsuariosController implements Initializable {
             mostrarMensaje("El username debe tener al menos 3 caracteres", true);
             return;
         }
+        if (cmbRol.getValue() == null) {
+            mostrarMensaje("Seleccione un rol", true);
+            return;
+        }
 
         usuarioSeleccionado.setUsername(username);
         usuarioSeleccionado.setRol(cmbRol.getValue());
@@ -215,12 +221,20 @@ public class UsuariosController implements Initializable {
             return;
         }
 
-        if (UsuarioDAO.eliminar(usuarioSeleccionado.getId())) {
-            mostrarMensaje("Usuario eliminado!", false);
-            limpiarFormulario();
-            cargarUsuarios();
-        } else {
-            mostrarMensaje("Error al eliminar usuario", true);
+        Alert alerta = new Alert(Alert.AlertType.CONFIRMATION);
+        alerta.setTitle("Confirmar desactivacion");
+        alerta.setHeaderText("Desactivar usuario");
+        alerta.setContentText("Desactivar a " + usuarioSeleccionado.getUsername() + "? No podra iniciar sesion.");
+
+        Optional<ButtonType> resultado = alerta.showAndWait();
+        if (resultado.isPresent() && resultado.get() == ButtonType.OK) {
+            if (UsuarioDAO.eliminar(usuarioSeleccionado.getId())) {
+                mostrarMensaje("Usuario desactivado!", false);
+                limpiarFormulario();
+                cargarUsuarios();
+            } else {
+                mostrarMensaje("Error al desactivar usuario", true);
+            }
         }
     }
 
@@ -229,6 +243,7 @@ public class UsuariosController implements Initializable {
         txtUsername.clear();
         txtPassword.clear();
         txtPassword.setPromptText("Ingrese password");
+        // Desbloquear password (modo creacion)
         txtPassword.setEditable(true);
         txtPassword.setStyle("");
         editandoContrasena = false;
