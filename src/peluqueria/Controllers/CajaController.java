@@ -54,7 +54,7 @@ public class CajaController implements Initializable {
     @FXML private Label lblMensaje;
 
     private ObservableList<FacturaDetalle> listaDetalle = FXCollections.observableArrayList();
-    private static final BigDecimal IVA_RATE = new BigDecimal("0.15");
+    private static final BigDecimal TASA_IVA = new BigDecimal("0.15");
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -132,7 +132,7 @@ public class CajaController implements Initializable {
         for (FacturaDetalle d : listaDetalle) {
             subtotal = subtotal.add(d.getSubtotal());
         }
-        BigDecimal iva = subtotal.multiply(IVA_RATE).setScale(2, RoundingMode.HALF_UP);
+        BigDecimal iva = subtotal.multiply(TASA_IVA).setScale(2, RoundingMode.HALF_UP);
         BigDecimal total = subtotal.add(iva);
 
         lblSubtotal.setText("$" + subtotal.setScale(2, RoundingMode.HALF_UP));
@@ -187,7 +187,7 @@ public class CajaController implements Initializable {
         for (FacturaDetalle d : listaDetalle) {
             subtotal = subtotal.add(d.getSubtotal());
         }
-        BigDecimal iva = subtotal.multiply(IVA_RATE).setScale(2, RoundingMode.HALF_UP);
+        BigDecimal iva = subtotal.multiply(TASA_IVA).setScale(2, RoundingMode.HALF_UP);
         BigDecimal total = subtotal.add(iva);
 
         // Crear factura

@@ -120,25 +120,30 @@ public class ClientesController implements Initializable {
             return;
         }
 
+        String resultado;
         if (clienteSeleccionado != null) {
-            // Actualizar
-            boolean ok = ClienteDAO.actualizar(
+            resultado = ClienteDAO.actualizar(
                 clienteSeleccionado.getId(), nombre, telefono, email,
                 txtDireccion.getText().trim(), txtNotas.getText().trim()
             );
-            if (ok) {
+            if (resultado.equals("ok")) {
                 mostrarMensaje("Cliente actualizado exitosamente!", false);
+            } else if (resultado.equals("email_duplicado")) {
+                mostrarMensaje("Ya existe un cliente con ese email", true);
+                return;
             } else {
                 mostrarMensaje("Error al actualizar cliente", true);
             }
         } else {
-            // Crear nuevo
-            boolean ok = ClienteDAO.crear(
+            resultado = ClienteDAO.crear(
                 nombre, telefono, email,
                 txtDireccion.getText().trim(), txtNotas.getText().trim()
             );
-            if (ok) {
+            if (resultado.equals("ok")) {
                 mostrarMensaje("Cliente guardado exitosamente!", false);
+            } else if (resultado.equals("email_duplicado")) {
+                mostrarMensaje("Ya existe un cliente con ese email", true);
+                return;
             } else {
                 mostrarMensaje("Error al guardar cliente", true);
             }

@@ -34,38 +34,46 @@ public class ClienteDAO {
         return clientes;
     }
 
-    public static boolean crear(String nombre, String telefono, String email, String direccion, String notas) {
+    // Retorna: "ok", "email_duplicado", o "error"
+    public static String crear(String nombre, String telefono, String email, String direccion, String notas) {
         String query = "INSERT INTO clientes (nombre, telefono, email, direccion, notas) VALUES (?, ?, ?, ?, ?)";
         try (Connection conn = Conexion.getConexion();
              PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setString(1, nombre);
             ps.setString(2, telefono);
-            ps.setString(3, email);
+            ps.setString(3, email.isEmpty() ? null : email);
             ps.setString(4, direccion);
             ps.setString(5, notas);
             ps.executeUpdate();
-            return true;
+            return "ok";
         } catch (SQLException e) {
+            if (e.getSQLState() != null && e.getSQLState().equals("23505")) {
+                return "email_duplicado";
+            }
             System.err.println("Error al crear cliente: " + e.getMessage());
-            return false;
+            return "error";
         }
     }
 
-    public static boolean actualizar(int id, String nombre, String telefono, String email, String direccion, String notas) {
+    // Retorna: "ok", "email_duplicado", o "error"
+    public static String actualizar(int id, String nombre, String telefono, String email, String direccion, String notas) {
         String query = "UPDATE clientes SET nombre = ?, telefono = ?, email = ?, direccion = ?, notas = ? WHERE id = ?";
         try (Connection conn = Conexion.getConexion();
              PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setString(1, nombre);
             ps.setString(2, telefono);
-            ps.setString(3, email);
+            ps.setString(3, email.isEmpty() ? null : email);
             ps.setString(4, direccion);
             ps.setString(5, notas);
             ps.setInt(6, id);
             ps.executeUpdate();
-            return true;
+            return "ok";
         } catch (SQLException e) {
+            if (e.getSQLState() != null && e.getSQLState().equals("23505")) {
+                return "email_duplicado";
+            }
             System.err.println("Error al actualizar cliente: " + e.getMessage());
-            return false;
+            return "error";
         }
     }
 

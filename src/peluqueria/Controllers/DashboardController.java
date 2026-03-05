@@ -33,10 +33,10 @@ public class DashboardController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         // Mostrar fecha actual
         LocalDate hoy = LocalDate.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(
+        DateTimeFormatter formateador = DateTimeFormatter.ofPattern(
             "EEEE dd 'de' MMMM, yyyy", new Locale("es", "ES")
         );
-        String fecha = hoy.format(formatter);
+        String fecha = hoy.format(formateador);
         fecha = fecha.substring(0, 1).toUpperCase() + fecha.substring(1);
         lblFecha.setText(fecha);
 

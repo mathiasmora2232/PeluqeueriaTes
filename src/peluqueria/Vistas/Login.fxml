@@ -30,26 +30,26 @@
 
         <VBox spacing="5.0">
             <Label text="Usuario" styleClass="label-form"/>
-            <TextField fx:id="usernameField" promptText="Ingrese su usuario"/>
+            <TextField fx:id="campoUsuario" promptText="Ingrese su usuario"/>
         </VBox>
 
         <VBox spacing="5.0">
             <Label text="Contraseña" styleClass="label-form"/>
-            <PasswordField fx:id="passwordField" promptText="Ingrese su contraseña"/>
+            <PasswordField fx:id="campoContrasena" promptText="Ingrese su contraseña"/>
         </VBox>
 
-        <Button fx:id="loginButton"
-                text="Iniciar Sesión"
-                onAction="#handleLogin"
+        <Button fx:id="botonEntrar"
+                text="Iniciar Sesion"
+                onAction="#manejarEntrada"
                 styleClass="btn-login"/>
 
-        <Label fx:id="statusLabel"/>
+        <Label fx:id="etiquetaEstado"/>
 
     </VBox>
     
         <Button fx:id="entrar"
             text="Entrar Directo"
-            onAction="#forcelogin"
+            onAction="#entradaDirecta"
             styleClass="btn-force"/>
             
         

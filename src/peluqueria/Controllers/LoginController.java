@@ -15,49 +15,43 @@ import peluqueria.Models.Usuario;
 
 public class LoginController {
 
-    @FXML private TextField usernameField;
-    @FXML private PasswordField passwordField;
-    @FXML private Button loginButton;
+    @FXML private TextField campoUsuario;
+    @FXML private PasswordField campoContrasena;
+    @FXML private Button botonEntrar;
     @FXML private Button entrar;
-    @FXML private Label statusLabel;
+    @FXML private Label etiquetaEstado;
 
     public void initialize(){
-        statusLabel.setText("");
+        etiquetaEstado.setText("");
     }
 
     // LOGIN NORMAL
     @FXML
-    private void handleLogin(){
+    private void manejarEntrada(){
 
-        String username = usernameField.getText();
-        String password = passwordField.getText();
+        String usuario = campoUsuario.getText();
+        String contrasena = campoContrasena.getText();
 
-        if(username.isEmpty() || password.isEmpty()){
-            statusLabel.setText("Complete todos los campos");
-            statusLabel.setStyle("-fx-text-fill:red;");
+        if(usuario.isEmpty() || contrasena.isEmpty()){
+            etiquetaEstado.setText("Complete todos los campos");
+            etiquetaEstado.setStyle("-fx-text-fill:red;");
             return;
         }
 
         // Validar usuario contra la base de datos
-        Usuario usuario = UsuarioDAO.validarUsuario(username, password);
-        
-        System.out.println("DEBUG - Usuario encontrado: " + (usuario != null ? "SÍ" : "NO"));
-        if(usuario != null) {
-            System.out.println("DEBUG - Username: " + usuario.getUsername());
-            System.out.println("DEBUG - Rol: " + usuario.getRol());
-        }
-        
-        if(usuario != null && (usuario.getRol().equals("admin") || usuario.getRol().equals("barbero") || usuario.getRol().equals("recepcion"))){
+        Usuario usuarioValido = UsuarioDAO.validarUsuario(usuario, contrasena);
+
+        if(usuarioValido != null && (usuarioValido.getRol().equals("admin") || usuarioValido.getRol().equals("barbero") || usuarioValido.getRol().equals("recepcion"))){
             abrirSistema();
         }else{
-            statusLabel.setText("Usuario o contraseña incorrecto");
-            statusLabel.setStyle("-fx-text-fill:red;");
+            etiquetaEstado.setText("Usuario o contrasena incorrecto");
+            etiquetaEstado.setStyle("-fx-text-fill:red;");
         }
     }
 
     // BOTON BYPASS
     @FXML
-    private void forcelogin(){
+    private void entradaDirecta(){
         abrirSistema();
     }
 
@@ -78,12 +72,12 @@ public class LoginController {
             stage.show();
 
             // cerrar login
-            Stage loginStage = (Stage) loginButton.getScene().getWindow();
-            loginStage.close();
+            Stage ventanaActual = (Stage) botonEntrar.getScene().getWindow();
+            ventanaActual.close();
 
         }catch(Exception e){
             e.printStackTrace();
-            statusLabel.setText("Error al abrir el sistema");
+            etiquetaEstado.setText("Error al abrir el sistema");
         }
     }
 }

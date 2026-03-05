@@ -6,21 +6,21 @@ public class Servicio {
     private int id;
     private String nombre;
     private BigDecimal precio;
-    private Integer duracionMin;
+    private Integer duracionMinutos;
     private String descripcion;
 
-    public Servicio(int id, String nombre, BigDecimal precio, Integer duracionMin, String descripcion) {
+    public Servicio(int id, String nombre, BigDecimal precio, Integer duracionMinutos, String descripcion) {
         this.id = id;
         this.nombre = nombre;
         this.precio = precio;
-        this.duracionMin = duracionMin;
+        this.duracionMinutos = duracionMinutos;
         this.descripcion = descripcion;
     }
 
-    public Servicio(String nombre, BigDecimal precio, Integer duracionMin, String descripcion) {
+    public Servicio(String nombre, BigDecimal precio, Integer duracionMinutos, String descripcion) {
         this.nombre = nombre;
         this.precio = precio;
-        this.duracionMin = duracionMin;
+        this.duracionMinutos = duracionMinutos;
         this.descripcion = descripcion;
     }
 
@@ -49,12 +49,12 @@ public class Servicio {
         this.precio = precio;
     }
 
-    public Integer getDuracionMin() {
-        return duracionMin;
+    public Integer getDuracionMinutos() {
+        return duracionMinutos;
     }
 
-    public void setDuracionMin(Integer duracionMin) {
-        this.duracionMin = duracionMin;
+    public void setDuracionMinutos(Integer duracionMinutos) {
+        this.duracionMinutos = duracionMinutos;
     }
 
     public String getDescripcion() {

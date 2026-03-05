@@ -38,7 +38,7 @@ public class CitaDAO {
              PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setString(1, nombre);
             ps.setString(2, telefono);
-            ps.setString(3, email);
+            ps.setString(3, (email != null && !email.isEmpty()) ? email : null);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
                 return rs.getInt("id");
@@ -60,15 +60,16 @@ public class CitaDAO {
     }
 
     // Crear una nueva cita
-    public static boolean crear(int clienteId, int servicioId, LocalDate fecha, String hora, String observaciones) {
-        String query = "INSERT INTO citas (cliente_id, servicio_id, fecha, hora, estado, observaciones) VALUES (?, ?, ?, ?, 'Agendada', ?)";
+    public static boolean crear(int clienteId, int servicioId, int estilistaId, LocalDate fecha, String hora, String observaciones) {
+        String query = "INSERT INTO citas (cliente_id, servicio_id, estilista_id, fecha, hora, estado, observaciones) VALUES (?, ?, ?, ?, ?, 'Agendada', ?)";
         try (Connection conn = Conexion.getConexion();
              PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setInt(1, clienteId);
             ps.setInt(2, servicioId);
-            ps.setDate(3, Date.valueOf(fecha));
-            ps.setTime(4, Time.valueOf(LocalTime.parse(hora)));
-            ps.setString(5, observaciones);
+            ps.setInt(3, estilistaId);
+            ps.setDate(4, Date.valueOf(fecha));
+            ps.setTime(5, Time.valueOf(LocalTime.parse(hora)));
+            ps.setString(6, observaciones);
             ps.executeUpdate();
             System.out.println("Cita creada exitosamente");
             return true;
@@ -78,14 +79,16 @@ public class CitaDAO {
         }
     }
 
-    // Obtener todas las citas con datos de cliente y servicio (para la tabla)
+    // Obtener todas las citas con datos de cliente, servicio y estilista
     public static List<String[]> obtenerTodas() {
         List<String[]> citas = new ArrayList<>();
         String query = "SELECT c.id, cl.nombre AS cliente, s.nombre AS servicio, " +
-                       "c.fecha, c.hora, c.estado, c.observaciones " +
+                       "COALESCE(e.nombre, '') AS estilista, " +
+                       "c.fecha, c.hora, c.estado " +
                        "FROM citas c " +
                        "JOIN clientes cl ON c.cliente_id = cl.id " +
                        "JOIN servicios s ON c.servicio_id = s.id " +
+                       "LEFT JOIN estilistas e ON c.estilista_id = e.id_usuario " +
                        "ORDER BY c.fecha DESC, c.hora DESC";
         try (Connection conn = Conexion.getConexion();
              PreparedStatement ps = conn.prepareStatement(query)) {
@@ -98,8 +101,7 @@ public class CitaDAO {
                 fila[3] = rs.getDate("fecha").toLocalDate().toString();
                 fila[4] = rs.getTime("hora").toLocalTime().toString();
                 fila[5] = rs.getString("estado");
-                String obs = rs.getString("observaciones");
-                fila[6] = (obs != null && obs.startsWith("Estilista: ")) ? obs.substring(11) : (obs != null ? obs : "");
+                fila[6] = rs.getString("estilista");
                 citas.add(fila);
             }
             rs.close();

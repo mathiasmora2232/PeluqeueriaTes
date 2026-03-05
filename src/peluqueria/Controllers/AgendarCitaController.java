@@ -172,9 +172,10 @@ public class AgendarCitaController implements Initializable {
         boolean guardado = CitaDAO.crear(
             clienteId,
             cmbServicio.getValue().getId(),
+            cmbEstilista.getValue().getIdUsuario(),
             dpFecha.getValue(),
             cmbHora.getValue(),
-            "Estilista: " + cmbEstilista.getValue().getNombre()
+            ""
         );
 
         if (guardado) {

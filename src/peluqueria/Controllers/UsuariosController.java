@@ -40,7 +40,7 @@ public class UsuariosController implements Initializable {
     private ObservableList<Usuario> listaUsuarios = FXCollections.observableArrayList();
     private FilteredList<Usuario> listaFiltrada;
     private Usuario usuarioSeleccionado = null;
-    private boolean editandoPassword = false;
+    private boolean editandoContrasena = false;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -79,7 +79,7 @@ public class UsuariosController implements Initializable {
                 txtPassword.setText("***");
                 txtPassword.setEditable(false);
                 txtPassword.setStyle("-fx-opacity: 0.6;");
-                editandoPassword = false;
+                editandoContrasena = false;
                 cmbRol.setValue(newVal.getRol());
             }
         });
@@ -152,7 +152,7 @@ public class UsuariosController implements Initializable {
 
         Optional<ButtonType> resultado = alerta.showAndWait();
         if (resultado.isPresent() && resultado.get() == ButtonType.OK) {
-            editandoPassword = true;
+            editandoContrasena = true;
             txtPassword.setEditable(true);
             txtPassword.setStyle("");
             txtPassword.setText("");
@@ -186,7 +186,7 @@ public class UsuariosController implements Initializable {
         usuarioSeleccionado.setRol(cmbRol.getValue());
 
         // Solo actualizar password si se habilito la edicion
-        if (editandoPassword) {
+        if (editandoContrasena) {
             String password = txtPassword.getText().trim();
             if (password.isEmpty()) {
                 mostrarMensaje("Ingrese la nueva contrasena", true);
@@ -231,7 +231,7 @@ public class UsuariosController implements Initializable {
         txtPassword.setPromptText("Ingrese password");
         txtPassword.setEditable(true);
         txtPassword.setStyle("");
-        editandoPassword = false;
+        editandoContrasena = false;
         cmbRol.setValue(null);
         lblMensaje.setText("");
         usuarioSeleccionado = null;

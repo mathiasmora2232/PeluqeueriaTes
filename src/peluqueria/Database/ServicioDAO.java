@@ -76,7 +76,7 @@ public class ServicioDAO {
             
             ps.setString(1, servicio.getNombre());
             ps.setBigDecimal(2, servicio.getPrecio());
-            ps.setInt(3, servicio.getDuracionMin());
+            ps.setInt(3, servicio.getDuracionMinutos());
             ps.setString(4, servicio.getDescripcion());
             
             ps.executeUpdate();
@@ -97,7 +97,7 @@ public class ServicioDAO {
             
             ps.setString(1, servicio.getNombre());
             ps.setBigDecimal(2, servicio.getPrecio());
-            ps.setInt(3, servicio.getDuracionMin());
+            ps.setInt(3, servicio.getDuracionMinutos());
             ps.setString(4, servicio.getDescripcion());
             ps.setInt(5, servicio.getId());
             

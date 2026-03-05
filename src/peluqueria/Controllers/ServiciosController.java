@@ -44,7 +44,7 @@ public class ServiciosController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         colNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
         colPrecio.setCellValueFactory(new PropertyValueFactory<>("precio"));
-        colDuracion.setCellValueFactory(new PropertyValueFactory<>("duracionMin"));
+        colDuracion.setCellValueFactory(new PropertyValueFactory<>("duracionMinutos"));
         colDescripcion.setCellValueFactory(new PropertyValueFactory<>("descripcion"));
 
         listaFiltrada = new FilteredList<>(listaServicios, p -> true);
@@ -64,7 +64,7 @@ public class ServiciosController implements Initializable {
                 servicioSeleccionado = newVal;
                 txtNombre.setText(newVal.getNombre());
                 txtPrecio.setText(newVal.getPrecio() != null ? newVal.getPrecio().toString() : "");
-                txtDuracion.setText(newVal.getDuracionMin() != null ? String.valueOf(newVal.getDuracionMin()) : "");
+                txtDuracion.setText(newVal.getDuracionMinutos() != null ? String.valueOf(newVal.getDuracionMinutos()) : "");
                 txtDescripcion.setText(newVal.getDescripcion() != null ? newVal.getDescripcion() : "");
             }
         });
@@ -157,7 +157,7 @@ public class ServiciosController implements Initializable {
 
             servicioSeleccionado.setNombre(txtNombre.getText().trim());
             servicioSeleccionado.setPrecio(precio);
-            servicioSeleccionado.setDuracionMin(duracion);
+            servicioSeleccionado.setDuracionMinutos(duracion);
             servicioSeleccionado.setDescripcion(txtDescripcion.getText().trim());
 
             if (ServicioDAO.actualizar(servicioSeleccionado)) {

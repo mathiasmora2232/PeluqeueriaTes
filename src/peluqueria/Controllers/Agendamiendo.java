@@ -115,9 +115,10 @@ public class Agendamiendo implements Initializable {
         boolean guardado = CitaDAO.crear(
             clienteId,
             servicioSeleccionado.getId(),
+            estilistaSeleccionado.getIdUsuario(),
             dpFecha.getValue(),
             cmbHora.getValue(),
-            "Estilista: " + estilistaSeleccionado.getNombre()
+            ""
         );
 
         if (guardado) {
